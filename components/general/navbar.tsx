@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 
 const Navbar = () => {
   return (
-    <header className="p-4 flex justify-between items-center">
+    <header className="p-4 flex justify-between items-center border-b">
       <div>Quiz</div>
       <div className="flex items-center gap-x-4">
         <Button>
