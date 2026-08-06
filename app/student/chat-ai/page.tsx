@@ -1,4 +1,4 @@
-const Tutor_Page = () => {
+const Chat_Ai = () => {
   return (
     <section className="flex border items-center justify-center text-2xl font-semibold p-20">
       <p>Coming Soon...</p>
@@ -6,4 +6,4 @@ const Tutor_Page = () => {
   );
 };
 
-export default Tutor_Page;
+export default Chat_Ai;
