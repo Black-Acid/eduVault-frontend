@@ -18,7 +18,7 @@ import {
 } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
 import { FieldError } from "~/components/ui/field";
-import { Spinner } from "~/components/ui/spinner";
+// import { Spinner } from "~/components/ui/spinner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -224,7 +224,7 @@ export function SignupForm({
                   className="w-full"
                   disabled={isLoading === true}
                 >
-                  {isLoading ? <Spinner /> : "Sign Up"}
+                  {isLoading ? "Loading" : "Sign Up"}
                 </Button>
 
                 <FieldDescription className="text-center">
