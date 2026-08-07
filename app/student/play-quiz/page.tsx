@@ -24,12 +24,6 @@ export default async function Quiz_Play_Page({ searchParams }: PageProps) {
     return <Choose_Subject subjects={subjects} />;
   }
 
-  console.log(
-    subjectName.split("-").join(" "),
-    subjectPaper.split("-").join(" "),
-    parseInt(subjectYear),
-  );
-
   // 3. Otherwise, fetch the questions using the parameters from the URL
   const questions = await fetch_questions(
     subjectName.split("-").join(" "),
@@ -39,7 +33,7 @@ export default async function Quiz_Play_Page({ searchParams }: PageProps) {
 
   if (!questions || questions.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4">
+      <div className="flex flex-col items-center justify-center p-4">
         <p className="text-slate-600 mb-4">
           No questions found for this selection.
         </p>
@@ -48,6 +42,12 @@ export default async function Quiz_Play_Page({ searchParams }: PageProps) {
     );
   }
 
+  const paper = subjects.find(
+    ({ name }) => name === subjectName.split("-").join(" "),
+  );
+
+  const paper_id = paper?.papers[0].id;
+
   // 4. Render the active quiz client component with the fetched questions
-  return <Quiz_Client questions={questions} />;
+  return <Quiz_Client questions={questions} paper_id={paper_id} />;
 }

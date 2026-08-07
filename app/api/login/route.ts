@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
 
     // Store the entire login data as a JSON string in the cookie
     res.cookies.set("data", JSON.stringify(data), {
-      maxAge: 60 * 60 * 2,
+      maxAge: 60 * 60 * 24,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
