@@ -4,9 +4,25 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Quiz_Results_Card from "./quiz-result-card";
 import Quiz_Question_Card from "./quiz-question-card";
-import { Progress } from "../ui/progress";
 import { Button } from "../ui/button";
-import Choose_Subject from "./choose-subject";
+import { Progress } from "../ui/progress";
+import { submit_answers } from "~/lib/requests";
+import { toast } from "../ui/toast";
+
+type wrong_question = {
+  question_id: number;
+  selected_option_id: number;
+  correct_option_id: number;
+};
+
+export type Results = {
+  score: number;
+  total_questions: number;
+  percentage: number;
+  correct: number;
+  wrong: number;
+  wrong_questions: wrong_question[];
+};
 
 interface Option {
   id: number;
@@ -23,26 +39,56 @@ interface Question {
 
 export interface Quiz_Client_Props {
   questions: Question[];
+  paper_id?: number;
 }
 
-export default function Quiz_Client({ questions }: Quiz_Client_Props) {
+export default function Quiz_Client({
+  questions,
+  paper_id,
+}: Quiz_Client_Props) {
   const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedAnswers, setSelectedAnswers] = useState<{
-    [key: number]: string;
-  }>({});
+  const [selectedAnswers, setSelectedAnswers] = useState<
+    | {
+        question_id: number;
+        selected_option_id: number;
+      }[]
+    | null
+  >(null);
+
+  const [results, setResults] = useState<Results | null>(null);
+
   const [timeLeft, setTimeLeft] = useState(60);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const currentQuestion = questions[currentIndex];
   const progressPercentage = ((currentIndex + 1) / questions.length) * 100;
 
-  const handleNext = () => {
-    if (currentIndex < questions.length - 1) {
+  const handleNext = async () => {
+    if (selectedAnswers?.find((a) => a.question_id === currentQuestion.id)) {
+      if (currentIndex < questions.length - 1) {
+        setCurrentIndex((prev) => prev + 1);
+        setTimeLeft(60);
+      } else {
+        setIsSubmitting(true);
+        setTimeLeft(0);
+        const answers = await submit_answers({
+          selectedAnswers,
+          paper_id: paper_id as number,
+        });
+        setIsSubmitted(true);
+        setResults(await answers);
+        setIsSubmitting(false);
+      }
+    } else if (timeLeft <= 0) {
       setCurrentIndex((prev) => prev + 1);
       setTimeLeft(60);
     } else {
-      setIsSubmitted(true);
+      toast.add({
+        description: "Select an answer before continuing",
+        type: "warning",
+      });
     }
   };
 
@@ -50,9 +96,23 @@ export default function Quiz_Client({ questions }: Quiz_Client_Props) {
     if (isSubmitted) return;
 
     if (timeLeft <= 0) {
-      // avoid calling setState synchronously inside effect to prevent cascading renders
-
       const t = setTimeout(() => {
+        setSelectedAnswers((prev) =>
+          prev
+            ? [
+                ...prev,
+                {
+                  question_id: currentQuestion.id,
+                  selected_option_id: 0, // Assuming 0 indicates no selection
+                },
+              ]
+            : [
+                {
+                  question_id: currentQuestion.id,
+                  selected_option_id: 0,
+                },
+              ],
+        );
         handleNext();
       }, 0);
       return () => clearTimeout(t);
@@ -65,22 +125,39 @@ export default function Quiz_Client({ questions }: Quiz_Client_Props) {
     return () => clearInterval(timer);
   }, [timeLeft, currentIndex, isSubmitted]);
 
-  const handleSelectOption = (label: string) => {
-    setSelectedAnswers({
-      ...selectedAnswers,
-      [currentQuestion.id]: label,
-    });
+  const handleSelectOption = (option_id: number) => {
+    setSelectedAnswers((prev) =>
+      prev
+        ? [
+            ...prev,
+            {
+              question_id: currentQuestion.id,
+              selected_option_id: currentQuestion.options.find(
+                ({ id }) => id === option_id,
+              )?.id as number,
+            },
+          ]
+        : [
+            {
+              question_id: currentQuestion.id,
+              selected_option_id: currentQuestion.options.find(
+                ({ id }) => id === option_id,
+              )?.id as number,
+            },
+          ],
+    );
   };
 
   if (isSubmitted) {
     return (
       <Quiz_Results_Card
-        totalQuestions={questions.length}
+        results={results}
+        onAI={() => router.push("/chat-ai")}
         onRestart={() => {
           setIsSubmitted(false);
           setCurrentIndex(0);
-          setSelectedAnswers({});
-          setTimeLeft(30);
+          setSelectedAnswers(null);
+          setTimeLeft(60);
         }}
         onDashboard={() => router.push("/student")}
       />
@@ -117,16 +194,25 @@ export default function Quiz_Client({ questions }: Quiz_Client_Props) {
       <div className="max-w-2xl w-full mx-auto my-8">
         <Quiz_Question_Card
           question={currentQuestion}
-          selectedLabel={selectedAnswers[currentQuestion.id]}
+          selected_id={
+            selectedAnswers?.find((a) => a.question_id === currentQuestion.id)
+              ?.selected_option_id
+          }
           onSelect={handleSelectOption}
         />
       </div>
 
       {/* Footer Navigation */}
       <div className="max-w-2xl w-full mx-auto flex items-center justify-end">
-        <Button onClick={handleNext} className="font-medium">
+        <Button
+          onClick={handleNext}
+          disabled={isSubmitting}
+          className="font-medium"
+        >
           {currentIndex === questions.length - 1
-            ? "Submit Quiz"
+            ? isSubmitting
+              ? "Submitting..."
+              : "Submit Quiz"
             : "Next Question"}
         </Button>
       </div>

@@ -13,13 +13,13 @@ interface Question {
 
 interface QuizQuestionCardProps {
   question: Question;
-  selectedLabel?: string;
-  onSelect: (label: string) => void;
+  selected_id?: number;
+  onSelect: (id: number) => void;
 }
 
 export default function Quiz_Question_Card({
   question,
-  selectedLabel,
+  selected_id,
   onSelect,
 }: QuizQuestionCardProps) {
   return (
@@ -30,11 +30,11 @@ export default function Quiz_Question_Card({
 
       <div className="space-y-3">
         {question.options.map((option) => {
-          const isSelected = selectedLabel === option.label;
+          const isSelected = selected_id === option.id;
           return (
             <button
               key={option.id}
-              onClick={() => onSelect(option.label)}
+              onClick={() => onSelect(option.id)}
               className={`w-full text-left p-4 rounded-xl border-2 transition-all flex items-center justify-between font-medium ${
                 isSelected
                   ? "border-primary bg-primary-foreground text-primary shadow-sm"

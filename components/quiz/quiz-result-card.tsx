@@ -1,15 +1,18 @@
 import { Button } from "../ui/button";
+import { Results } from "./quiz-client";
 
 interface QuizResultsCardProps {
-  totalQuestions: number;
+  results: Results | null;
   onRestart: () => void;
   onDashboard: () => void;
+  onAI: () => void;
 }
 
 export default function Quiz_Results_Card({
-  totalQuestions,
+  results,
   onRestart,
   onDashboard,
+  onAI,
 }: QuizResultsCardProps) {
   return (
     <div className="flex items-center justify-center p-4">
@@ -22,12 +25,40 @@ export default function Quiz_Results_Card({
           Great job reviewing your core subject material today.
         </p>
 
-        <div className="bg-primary-foreground p-4 rounded-xl border border-primary/20">
-          <p className="text-sm text-primary/70">Total Questions Answered</p>
-          <p className="text-4xl font-bold mt-1">{totalQuestions}</p>
+        <div className="grid grid-cols-2 gap-4 bg-primary-foreground p-4 rounded-xl border border-primary/20">
+          <p className="text-left text-primary/70">
+            <span>Total Questions:</span>
+            <span className="font-semibold text-primary">
+              {results?.total_questions || 0}
+            </span>
+          </p>
+          <p className="text-left text-primary/70">
+            <span>Correct Answers:</span>
+            <span className="font-semibold text-primary">
+              {results?.correct || 0}
+            </span>
+          </p>
+          <p className="text-left text-primary/70">
+            <span>Wrong Answers:</span>
+            <span className="font-semibold text-primary">
+              {results?.wrong || 0}
+            </span>
+          </p>
+          <p className="text-left text-primary/70">
+            <span>Score:</span>
+            <span className="font-semibold text-primary">
+              {results?.score || 0}/{results?.total_questions || 0}
+            </span>
+          </p>
+          <p className="col-span-full text-primary/70">
+            <span className="font-semibold text-primary text-4xl">
+              {results?.percentage?.toFixed(2) || 0}%
+            </span>
+          </p>
         </div>
 
         <div className="flex flex-col gap-y-3">
+          <Button onClick={onAI}>Review with AI</Button>
           <Button onClick={onRestart}>Try Again</Button>
           <Button onClick={onDashboard} variant="outline">
             Back to Dashboard
