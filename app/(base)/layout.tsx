@@ -4,7 +4,7 @@ export default function Base_Layout({ children }: LayoutProps<"/">) {
   return (
     <>
       <Navbar />
-      <main>{children}</main>
+      <main className="px-4 pt-4">{children}</main>
     </>
   );
 }
