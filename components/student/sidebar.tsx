@@ -1,16 +1,15 @@
+"use client";
 import Link from "next/link";
 import * as React from "react";
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from "~/components/ui/sidebar";
 
 // This is sample data.
@@ -30,6 +29,7 @@ const data = [
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { isMobile, setOpenMobile } = useSidebar();
   return (
     <Sidebar {...props}>
       <SidebarHeader className="text-lg font-semibold h-16 flex justify-start border-b flex-row items-center px-6">
@@ -40,7 +40,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenu key={title}>
             <SidebarMenuItem>
               <SidebarMenuButton>
-                <Link href={url}>{title}</Link>
+                <Link
+                  href={url}
+                  onClick={() => {
+                    if (isMobile) {
+                      setOpenMobile(false);
+                    }
+                  }}
+                >
+                  {title}
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
