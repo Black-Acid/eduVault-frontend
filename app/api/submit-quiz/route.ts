@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
+  const cookieData = req.cookies.get("data")?.value;
+  const userData = cookieData ? JSON.parse(cookieData) : null;
+  const token = userData?.access_token;
+
   try {
     const { selectedAnswers, paper_id } = await req.json();
 
@@ -10,6 +14,7 @@ export async function POST(req: NextRequest) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ answers: selectedAnswers, paper_id }),
       },
