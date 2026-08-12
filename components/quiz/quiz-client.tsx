@@ -125,27 +125,27 @@ export default function Quiz_Client({
     return () => clearInterval(timer);
   }, [timeLeft, currentIndex, isSubmitted]);
 
+
   const handleSelectOption = (option_id: number) => {
-    setSelectedAnswers((prev) =>
-      prev
-        ? [
-            ...prev,
-            {
-              question_id: currentQuestion.id,
-              selected_option_id: currentQuestion.options.find(
-                ({ id }) => id === option_id,
-              )?.id as number,
-            },
-          ]
-        : [
-            {
-              question_id: currentQuestion.id,
-              selected_option_id: currentQuestion.options.find(
-                ({ id }) => id === option_id,
-              )?.id as number,
-            },
-          ],
-    );
+    const selectedOptionId = currentQuestion.options.find(
+      ({ id }) => id === option_id,
+    )?.id as number;
+
+    setSelectedAnswers((prev) => {
+      const currentAnswers = prev || [];
+      // Remove any existing answer for this question, then append the new selection
+      const filteredAnswers = currentAnswers.filter(
+        (ans) => ans.question_id !== currentQuestion.id,
+      );
+
+      return [
+        ...filteredAnswers,
+        {
+          question_id: currentQuestion.id,
+          selected_option_id: selectedOptionId,
+        },
+      ];
+    });
   };
 
   if (isSubmitted) {
@@ -171,7 +171,7 @@ export default function Quiz_Client({
         <div className="flex items-center justify-between font-medium">
           <span className="text-primary/70">
             Question{" "}
-            <span className="font-semibold text-primary">
+            <span className="font-semibold text-indigo-600">
               {currentIndex + 1}
             </span>{" "}
             of {questions.length}
@@ -180,7 +180,7 @@ export default function Quiz_Client({
             className={`px-3 py-1 rounded-full text-sm font-semibold ${
               timeLeft < 10
                 ? "bg-red-100 text-red-600 animate-pulse"
-                : "bg-primary-foreground text-primary/70"
+                : "bg-indigo-600/5 text-indigo-600/70"
             }`}
           >
             ⏱️ {timeLeft}s remaining
