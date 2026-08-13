@@ -59,7 +59,7 @@ export default function Quiz_Client({
 
   const [results, setResults] = useState<Results | null>(null);
 
-  const [timeLeft, setTimeLeft] = useState(1);
+  const [timeLeft, setTimeLeft] = useState(60);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -70,7 +70,7 @@ export default function Quiz_Client({
     if (selectedAnswers?.find((a) => a.question_id === currentQuestion.id)) {
       if (currentIndex < questions.length - 1) {
         setCurrentIndex((prev) => prev + 1);
-        setTimeLeft(1);
+        setTimeLeft(60);
       } else {
         setIsSubmitting(true);
         setTimeLeft(0);
@@ -85,7 +85,7 @@ export default function Quiz_Client({
     } else if (timeLeft <= 0) {
       if (currentIndex < questions.length - 1) {
         setCurrentIndex((prev) => prev + 1);
-        setTimeLeft(1);
+        setTimeLeft(60);
       } else {
         setIsSubmitting(true);
         setTimeLeft(0);
@@ -153,7 +153,7 @@ export default function Quiz_Client({
           setIsSubmitted(false);
           setCurrentIndex(0);
           setSelectedAnswers(null);
-          setTimeLeft(1);
+          setTimeLeft(60);
         }}
         onDashboard={() => router.push("/student")}
       />
