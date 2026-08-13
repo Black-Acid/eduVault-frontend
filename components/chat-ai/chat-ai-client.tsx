@@ -8,6 +8,10 @@ import { useState, useEffect } from "react";
 import { Button } from "~/components/ui/button";
 import { chat_ai } from "~/lib/requests";
 
+type ai_response_type = {
+  explanation: string;
+};
+
 type WrongQuestion = {
   question_id: number;
   attempt_id: number;
@@ -22,7 +26,7 @@ export default function ChatAiClient({
   initialResults: QuizResults;
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [aiResponse, setAiResponse] = useState(null);
+  const [aiResponse, setAiResponse] = useState<ai_response_type | null>(null);
   const [loading, setLoading] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [resultsData, setResultsData] = useState<QuizResults | null>(
