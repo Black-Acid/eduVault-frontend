@@ -148,7 +148,7 @@ export default function Quiz_Client({
     return (
       <Quiz_Results_Card
         results={results}
-        onAI={() => router.push("/chat-ai")}
+        onAI={() => router.push("/student/chat-ai")}
         onRestart={() => {
           setIsSubmitted(false);
           setCurrentIndex(0);
