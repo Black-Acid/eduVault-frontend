@@ -33,6 +33,8 @@ export default function ChatAiClient({
     initialResults,
   );
 
+  console.log(initialResults);
+
   const wrongQuestions = resultsData || [];
   const currentWrong = wrongQuestions[currentIndex];
 
