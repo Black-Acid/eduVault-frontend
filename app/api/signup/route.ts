@@ -20,12 +20,13 @@ export async function POST(req: NextRequest) {
 
     // Handle non-200 responses from the external API
     if (!response.ok) {
-      console.log(data);
-
       return NextResponse.json(
         {
           error:
-            data.message || data.error || data.detail || "Invalid Credentials",
+            data.message ||
+            data.error ||
+            data.detail ||
+            "Could not add you. Please try again.",
         },
         { status: response.status },
       );
@@ -38,7 +39,7 @@ export async function POST(req: NextRequest) {
     res.cookies.set("data", JSON.stringify(data), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24 * 400,
+      maxAge: 60 * 60 * 2,
       path: "/",
     });
 

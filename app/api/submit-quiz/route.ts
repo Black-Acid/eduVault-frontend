@@ -43,7 +43,6 @@ export async function POST(req: NextRequest) {
     // Return the successful response
     return res;
   } catch {
-    // This only triggers if the 'fetch' fails entirely (network error)
     return NextResponse.json(
       { error: "Service unavailable. Please try again later." },
       { status: 503 },
