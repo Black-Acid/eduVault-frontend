@@ -13,7 +13,7 @@ interface Question {
 
 interface QuizQuestionCardProps {
   question: Question;
-  selected_id?: number;
+  selected_id?: number | null;
   onSelect: (id: number) => void;
 }
 

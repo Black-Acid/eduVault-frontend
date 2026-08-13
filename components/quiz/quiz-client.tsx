@@ -16,6 +16,7 @@ type wrong_question = {
 };
 
 export type Results = {
+  attempt_id: number;
   score: number;
   total_questions: number;
   percentage: number;
@@ -51,14 +52,14 @@ export default function Quiz_Client({
   const [selectedAnswers, setSelectedAnswers] = useState<
     | {
         question_id: number;
-        selected_option_id: number;
+        selected_option_id: number | null;
       }[]
     | null
   >(null);
 
   const [results, setResults] = useState<Results | null>(null);
 
-  const [timeLeft, setTimeLeft] = useState(60);
+  const [timeLeft, setTimeLeft] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -69,7 +70,7 @@ export default function Quiz_Client({
     if (selectedAnswers?.find((a) => a.question_id === currentQuestion.id)) {
       if (currentIndex < questions.length - 1) {
         setCurrentIndex((prev) => prev + 1);
-        setTimeLeft(60);
+        setTimeLeft(1);
       } else {
         setIsSubmitting(true);
         setTimeLeft(0);
@@ -82,8 +83,20 @@ export default function Quiz_Client({
         setIsSubmitting(false);
       }
     } else if (timeLeft <= 0) {
-      setCurrentIndex((prev) => prev + 1);
-      setTimeLeft(60);
+      if (currentIndex < questions.length - 1) {
+        setCurrentIndex((prev) => prev + 1);
+        setTimeLeft(1);
+      } else {
+        setIsSubmitting(true);
+        setTimeLeft(0);
+        const answers = await submit_answers({
+          selectedAnswers,
+          paper_id: paper_id as number,
+        });
+        setIsSubmitted(true);
+        setResults(await answers);
+        setIsSubmitting(false);
+      }
     } else {
       toast.add({
         description: "Select an answer before continuing",
@@ -97,22 +110,6 @@ export default function Quiz_Client({
 
     if (timeLeft <= 0) {
       const t = setTimeout(() => {
-        setSelectedAnswers((prev) =>
-          prev
-            ? [
-                ...prev,
-                {
-                  question_id: currentQuestion.id,
-                  selected_option_id: 0, // Assuming 0 indicates no selection
-                },
-              ]
-            : [
-                {
-                  question_id: currentQuestion.id,
-                  selected_option_id: 0,
-                },
-              ],
-        );
         handleNext();
       }, 0);
       return () => clearTimeout(t);
@@ -124,7 +121,6 @@ export default function Quiz_Client({
 
     return () => clearInterval(timer);
   }, [timeLeft, currentIndex, isSubmitted]);
-
 
   const handleSelectOption = (option_id: number) => {
     const selectedOptionId = currentQuestion.options.find(
@@ -157,7 +153,7 @@ export default function Quiz_Client({
           setIsSubmitted(false);
           setCurrentIndex(0);
           setSelectedAnswers(null);
-          setTimeLeft(60);
+          setTimeLeft(1);
         }}
         onDashboard={() => router.push("/student")}
       />

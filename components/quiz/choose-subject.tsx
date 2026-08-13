@@ -18,8 +18,6 @@ import {
 export default function Choose_Subject({ subjects }: { subjects: Subjects[] }) {
   const router = useRouter();
 
-  console.log(subjects);
-
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedPaper, setSelectedPaper] = useState("");

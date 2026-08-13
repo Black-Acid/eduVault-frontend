@@ -1,3 +1,5 @@
+"use client";
+import { useEffect } from "react";
 import { Button } from "../ui/button";
 import { Results } from "./quiz-client";
 
@@ -14,6 +16,24 @@ export default function Quiz_Results_Card({
   onDashboard,
   onAI,
 }: QuizResultsCardProps) {
+  useEffect(() => {
+    if (results) {
+      const wrong_answers = results?.wrong_questions;
+      const wrongs = wrong_answers?.map(
+        ({ question_id }: { question_id: number }) => ({
+          attempt_id: results?.attempt_id,
+          question_id,
+          is_solved: false,
+        }),
+      );
+      const d = new Date();
+      d.setTime(d.getTime() + 2 * 60 * 60 * 1000);
+      const expires = "expires=" + d.toUTCString();
+
+      // Store results directly as a JSON string without encoding
+      document.cookie = `quiz_results=${JSON.stringify(wrongs)}; ${expires}; path=/; SameSite=Lax`;
+    }
+  }, [results]);
   return (
     <div className="flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-8 text-center flex flex-col border gap-y-6">
