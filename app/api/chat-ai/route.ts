@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     const { attempt_id, question_id } = await req.json();
 
     const response = await fetch(
-      "https://eduvault-jadl.onrender.com/ai/explain/",
+      "https://eduvault-jadl.onrender.com/ai/explain",
       {
         method: "POST",
         headers: {
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
             data.message ||
             data.error ||
             data.detail ||
-            "Could not fetch answers",
+            "Could not fetch the AI explanation",
         },
         { status: response.status },
       );

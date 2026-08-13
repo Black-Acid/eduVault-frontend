@@ -50,14 +50,16 @@ export const chat_ai = async ({
       body: JSON.stringify({ attempt_id, question_id }),
     });
     if (!response.ok) {
-      toast.add({
+      return toast.add({
         description: "Could not send message to the AI",
         type: "error",
       });
     }
     const data = await response.json();
     return data;
-  } catch {
+  } catch (error) {
+    // LOG THE ACTUAL ERROR TO YOUR TERMINAL INSTEAD OF HIDING IT
+    console.error("API Route Internal Error:", error);
     return toast.add({
       description:
         "An error occurred while submitting question to the AI. Please try again.",
