@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import * as React from "react";
 import {
   Sidebar,
@@ -33,30 +34,40 @@ const data = [
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { isMobile, setOpenMobile } = useSidebar();
+  const pathname = usePathname();
+
+  const isActiveRoute = (url: string) => {
+    return pathname === url || (url !== "/student" && pathname.startsWith(`${url}/`));
+  };
+
   return (
     <Sidebar variant="floating" {...props}>
       <SidebarHeader className="text-lg font-semibold h-16 flex justify-start flex-row items-center px-4 border-b">
-        <div className="text-primary/60 flex items-baseline gap-0">
-          <span className="text-indigo-600 text-xl">Q</span>
-          <span>uiz</span>
+        <div className="flex items-baseline gap-0.5 text-2xl tracking-[-0.05em] leading-none">
+          <span className="font-black text-blue-600">Edu</span>
+          <span className="font-semibold text-slate-700">Vault</span>
         </div>
       </SidebarHeader>
       <SidebarContent className="p-2">
         {data.map(({ title, url }) => (
           <SidebarMenu key={title}>
             <SidebarMenuItem>
-              <SidebarMenuButton className="group hover:bg-indigo-600/5 rounded-md">
-                <Link
-                  href={url}
-                  onClick={() => {
-                    if (isMobile) {
-                      setOpenMobile(false);
-                    }
-                  }}
-                  className="text-primary/70 hover:text-primary w-full h-full"
-                >
-                  {title}
-                </Link>
+              <SidebarMenuButton
+                render={Link}
+                href={url}
+                isActive={isActiveRoute(url)}
+                onClick={() => {
+                  if (isMobile) {
+                    setOpenMobile(false);
+                  }
+                }}
+                className={
+                  isActiveRoute(url)
+                    ? "group rounded-md !bg-blue-600 !text-white !shadow-sm hover:!bg-blue-600 hover:!text-white"
+                    : "group rounded-md"
+                }
+              >
+                {title}
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
