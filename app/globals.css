@@ -9,6 +9,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
+  --font-space: var(--font-space);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -47,6 +48,28 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  --color-paper: var(--paper);
+  --color-paper-dim: var(--paper-dim);
+
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+
+  --color-navy: var(--navy);
+  --color-navy-soft: var(--navy-soft);
+
+  --color-green: var(--green);
+  --color-green-dark: var(--green-dark);
+  --color-green-pale: var(--green-pale);
+
+  --color-red: var(--red);
+  --color-red-pale: var(--red-pale);
+
+  --color-gold: var(--gold);
+  --color-gold-pale: var(--gold-pale);
+
+  --color-line: var(--line);
+  --color-line-navy: var(--line-navy);
 }
 
 :root {
@@ -82,6 +105,35 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Surfaces */
+  --paper: #f7f5ef;
+  --paper-dim: #efebe0;
+
+  /* Text */
+  --ink: #1c1b16;
+  --ink-soft: #5b584c;
+
+  /* Navy (structural / dark surfaces) */
+  --navy: #16213e;
+  --navy-soft: #22304f;
+
+  /* Green (core subjects / positive / primary accent) */
+  --green: #1f6f4e;
+  --green-dark: #164f38;
+  --green-pale: #9fd8be;
+
+  /* Red (wrong answers / weak areas / alerts) */
+  --red: #c6383f;
+  --red-pale: #f7e4e2;
+
+  /* Gold (elective subjects / streaks) */
+  --gold: #d9a441;
+  --gold-pale: #fbf0dc;
+
+  /* Borders */
+  --line: rgba(28, 27, 22, 0.14);
+  --line-navy: rgba(255, 255, 255, 0.14);
 }
 
 .dark {
@@ -128,4 +180,19 @@
   html {
     @apply font-sans;
   }
+}
+
+.continue-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    45deg,
+    #fff 0,
+    #fff 1px,
+    transparent 1px,
+    transparent 14px
+  );
 }

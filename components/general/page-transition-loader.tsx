@@ -129,7 +129,7 @@ export function PageTransitionLoader() {
   }
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-slate-950/45 px-4 backdrop-blur-lg">
+    <div className="fixed inset-0 z-9999 flex items-center justify-center bg-slate-950/45 px-4 backdrop-blur-lg">
       <div className="flex w-full max-w-sm flex-col items-center gap-4 rounded-3xl border border-white/15 bg-white/12 px-8 py-10 text-center text-white shadow-2xl shadow-slate-950/35">
         <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-white/10">
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/25 border-t-white" />

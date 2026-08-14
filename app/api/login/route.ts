@@ -5,7 +5,7 @@ export async function POST(req: NextRequest) {
     const { email, password } = await req.json();
 
     const response = await fetch(
-      "https://eduvault-jadl.onrender.com/auth/login",
+      "https://eduvault-jadl.onrender.com/auth/login/",
       {
         method: "POST",
         headers: {

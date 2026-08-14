@@ -13,7 +13,6 @@ import {
   SidebarRail,
   useSidebar,
 } from "~/components/ui/sidebar";
-import { Button } from "../ui/button";
 import Logout_Button from "../general/logout-button";
 
 // This is sample data.
@@ -37,18 +36,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
 
   const isActiveRoute = (url: string) => {
-    return pathname === url || (url !== "/student" && pathname.startsWith(`${url}/`));
+    return (
+      pathname === url || (url !== "/student" && pathname.startsWith(`${url}/`))
+    );
   };
 
   return (
     <Sidebar variant="floating" {...props}>
       <SidebarHeader className="text-lg font-semibold h-16 flex justify-start flex-row items-center px-4 border-b">
-        <div className="flex items-baseline gap-0.5 text-2xl tracking-[-0.05em] leading-none">
+        <div className="flex items-baseline gap-0.5 text-2xl tracking-tighter leading-none font-mono">
           <span className="font-black text-blue-600">Edu</span>
           <span className="font-semibold text-slate-700">Vault</span>
         </div>
       </SidebarHeader>
-      <SidebarContent className="p-2">
+      <SidebarContent className="px-2 py-4">
         {data.map(({ title, url }) => (
           <SidebarMenu key={title}>
             <SidebarMenuItem>
@@ -61,7 +62,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 }}
                 className={
                   isActiveRoute(url)
-                    ? "group rounded-md !bg-blue-600 !text-white !shadow-sm hover:!bg-blue-600 hover:!text-white"
+                    ? "group rounded-md bg-blue-600! text-white! shadow-sm hover:bg-blue-600! hover:text-white!"
                     : "group rounded-md"
                 }
               >

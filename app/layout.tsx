@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Fraunces, Figtree } from "next/font/google";
+import { Space_Mono, Fraunces, Figtree } from "next/font/google";
 import "./globals.css";
 import { cn } from "~/lib/utils";
 import { TooltipProvider } from "~/components/ui/tooltip";
@@ -8,9 +8,10 @@ import { PageTransitionLoader } from "~/components/general/page-transition-loade
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const space_mono = Space_Mono({
+  variable: "--font-space",
   subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 const geistMono = Fraunces({
@@ -30,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={cn(
         "h-full",
         "antialiased",
-        geistSans.variable,
+        space_mono.variable,
         geistMono.variable,
         "font-sans",
         figtree.variable,
