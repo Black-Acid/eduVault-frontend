@@ -119,25 +119,303 @@ const Student_Dashboard = async () => {
         </div>
 
         {/* Board */}
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-7 flex flex-col gap-y-4">
-            <div className="bg-paper border border-line rounded-lg hover:shadow-xl p-4 flex flex-col gap-y-4">
+        <div className="grid lg:grid-cols-12 gap-x-4 gap-y-8">
+          <div className="lg:col-span-7 flex flex-col gap-y-8">
+            <div className="bg-paper border border-line rounded-lg hover:shadow-xl p-4 flex flex-col gap-y-6">
               <div className="flex gap-x-4 justify-between items-baseline">
-                <h4 className="font-mono font-semibold text-2xl">
+                <h4 className="font-mono font-semibold text-xl">
                   Subject Mastery
                 </h4>
                 <Link
                   href={"/student"}
-                  className="text-green text-xs hover:underline"
+                  className="text-green text-xs hover:underline font-space"
                 >
                   See all subjects
                 </Link>
               </div>
-              <p>Hello World</p>
-              <p>Hello World</p>
+
+              {/* Subject Row */}
+              <div className="pb-4 border-b border-line grid grid-cols-[1fr_120px_60px] gap-2 items-center last:border-0">
+                <div className="flex flex-col gap-y-2">
+                  <span className="font-semibold">Integrated Science</span>
+                  <span className="text-xs font-space text-primary/70">
+                    340 attempted
+                  </span>
+                </div>
+                <ProgressPrimitive.Root value={75}>
+                  <ProgressTrack className="bg-green/20">
+                    <ProgressIndicator className="bg-green" />
+                  </ProgressTrack>
+                </ProgressPrimitive.Root>
+
+                <span className="font-semibold font-mono flex items-center justify-end">
+                  75%
+                </span>
+              </div>
+              {/* Subject Row */}
+              <div className="pb-4 border-b border-line grid grid-cols-[1fr_120px_60px] gap-2 items-center last:border-0">
+                <div className="flex flex-col gap-y-2">
+                  <span className="font-semibold">Core Mathematics</span>
+                  <span className="text-xs font-space text-primary/70">
+                    620 attempted
+                  </span>
+                </div>
+                <ProgressPrimitive.Root value={85}>
+                  <ProgressTrack className="bg-green/20">
+                    <ProgressIndicator className="bg-green" />
+                  </ProgressTrack>
+                </ProgressPrimitive.Root>
+
+                <span className="font-semibold font-mono flex items-center justify-end">
+                  85%
+                </span>
+              </div>
+              {/* Subject Row */}
+              <div className="pb-4 border-b border-line grid grid-cols-[1fr_120px_60px] gap-2 items-center last:border-0">
+                <div className="flex flex-col gap-y-2">
+                  <span className="font-semibold">English Language</span>
+                  <span className="text-xs font-space text-primary/70">
+                    430 attempted
+                  </span>
+                </div>
+                <ProgressPrimitive.Root value={52}>
+                  <ProgressTrack className="bg-green/20">
+                    <ProgressIndicator className="bg-green" />
+                  </ProgressTrack>
+                </ProgressPrimitive.Root>
+
+                <span className="font-semibold font-mono flex items-center justify-end">
+                  52%
+                </span>
+              </div>
+              {/* Subject Row */}
+              <div className="pb-4 border-b border-line grid grid-cols-[1fr_120px_60px] gap-2 items-center last:border-0">
+                <div className="flex flex-col gap-y-2">
+                  <span className="font-semibold">Chemistry</span>
+                  <span className="text-xs font-space text-primary/70">
+                    340 attempted
+                  </span>
+                </div>
+                <ProgressPrimitive.Root value={45}>
+                  <ProgressTrack className="bg-red/20">
+                    <ProgressIndicator className="bg-red" />
+                  </ProgressTrack>
+                </ProgressPrimitive.Root>
+
+                <span className="font-semibold font-mono flex items-center justify-end">
+                  45%
+                </span>
+              </div>
+              {/* Subject Row */}
+              <div className="pb-4 border-b border-line grid grid-cols-[1fr_120px_60px] gap-2 items-center last:border-0">
+                <div className="flex flex-col gap-y-2">
+                  <span className="font-semibold">Physics</span>
+                  <span className="text-xs font-space text-primary/70">
+                    320 attempted
+                  </span>
+                </div>
+                <ProgressPrimitive.Root value={65}>
+                  <ProgressTrack className="bg-green/20">
+                    <ProgressIndicator className="bg-green" />
+                  </ProgressTrack>
+                </ProgressPrimitive.Root>
+
+                <span className="font-semibold font-mono flex items-center justify-end">
+                  65%
+                </span>
+              </div>
+
+              {/* Subject Row */}
+              <div className="pb-4 border-b border-line grid grid-cols-[1fr_120px_60px] gap-2 items-center last:border-0">
+                <div className="flex flex-col gap-y-2">
+                  <span className="font-semibold">Elective Maths</span>
+                  <span className="text-xs font-space text-primary/70">
+                    830 attempted
+                  </span>
+                </div>
+                <ProgressPrimitive.Root value={95}>
+                  <ProgressTrack className="bg-green/20">
+                    <ProgressIndicator className="bg-green" />
+                  </ProgressTrack>
+                </ProgressPrimitive.Root>
+
+                <span className="font-semibold font-mono flex items-center justify-end">
+                  95%
+                </span>
+              </div>
+            </div>
+
+            {/* Script Review */}
+            <div className="bg-paper border border-line rounded-lg hover:shadow-xl p-4 flex flex-col gap-y-6">
+              <div className="flex gap-x-4 justify-between items-baseline">
+                <h4 className="font-mono font-semibold text-xl">
+                  Recent Scripts
+                </h4>
+                <Link
+                  href={"/student"}
+                  className="text-green text-xs hover:underline font-space"
+                >
+                  Full history
+                </Link>
+              </div>
+              {/* Script Row */}
+              <div className="grid grid-cols-[auto_1fr_auto] gap-x-4 items-center p-4 border border-line rounded-lg bg-white">
+                <div className="h-13 w-13 rounded-full border-3 text-green border-green flex items-center justify-center font-semibold font-mono">
+                  78%
+                </div>
+                <div className="flex flex-col gap-y-2">
+                  <span className="font-semibold">
+                    Core Maths · 2024 · Paper 2
+                  </span>
+                  <span className="text-xs font-space text-primary/70">
+                    32/40 correct
+                  </span>
+                </div>
+                <div className="flex justify-end">
+                  <Link
+                    href={"/student"}
+                    className="text-green text-xs hover:underline font-space"
+                  >
+                    Review with AI
+                  </Link>
+                </div>
+              </div>
+              {/* Script Row */}
+              <div className="grid grid-cols-[auto_1fr_auto] gap-x-4 items-center p-4 border border-line rounded-lg bg-white">
+                <div className="h-13 w-13 rounded-full border-3 text-red border-red flex items-center justify-center font-semibold font-mono">
+                  44%
+                </div>
+                <div className="flex flex-col gap-y-2">
+                  <span className="font-semibold">
+                    Physics · 2021 · Paper 2
+                  </span>
+                  <span className="text-xs font-space text-primary/70">
+                    11/25 correct
+                  </span>
+                </div>
+                <div className="flex justify-end">
+                  <Link
+                    href={"/student"}
+                    className="text-green text-xs hover:underline font-space"
+                  >
+                    Review with AI
+                  </Link>
+                </div>
+              </div>
+              {/* Script Row */}
+              <div className="grid grid-cols-[auto_1fr_auto] gap-x-4 items-center p-4 border border-line rounded-lg bg-white">
+                <div className="h-13 w-13 rounded-full border-3 text-green border-green flex items-center justify-center font-semibold font-mono">
+                  81%
+                </div>
+                <div className="flex flex-col gap-y-2">
+                  <span className="font-semibold">
+                    English Language · 2023 · Paper 3
+                  </span>
+                  <span className="text-xs font-space text-primary/70">
+                    32/40 correct
+                  </span>
+                </div>
+                <div className="flex justify-end">
+                  <Link
+                    href={"/student"}
+                    className="text-green text-xs hover:underline font-space"
+                  >
+                    Review with AI
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="col-span-5 flex flex-col gap-y-4">World</div>
+
+          {/* Second Side of the board */}
+          <div className="lg:col-span-5 flex flex-col gap-y-8">
+            {/* Messages From Tutor */}
+            <div className="bg-paper border border-line rounded-lg hover:shadow-xl p-4 flex flex-col gap-y-6">
+              <div className="flex gap-x-4 justify-between items-baseline">
+                <h4 className="font-mono font-semibold text-xl">
+                  Messages from your tutors
+                </h4>
+              </div>
+              {/* Message Row */}
+              <div className="cursor-pointer grid grid-cols-[auto_1fr_auto] gap-x-4 p-4 border border-line rounded-lg bg-white">
+                <div className="h-13 w-13 rounded-full text-green-pale bg-navy flex items-center justify-center font-semibold">
+                  JB
+                </div>
+                <div className="flex flex-col gap-y-2">
+                  <span className="font-semibold">Mr. Boateng</span>
+                  <span className="text-xs font-space text-primary/70">
+                    Redo Q7–9 on logs before we speak — you&apos;re close.
+                  </span>
+                </div>
+                <div className="flex justify-end">
+                  <div className="bg-red p-1 rounded-full h-fit w-fit"></div>
+                </div>
+              </div>
+              {/* Message Row */}
+              <div className="cursor-pointer grid grid-cols-[auto_1fr_auto] gap-x-4 p-4 border border-line rounded-lg bg-white">
+                <div className="h-13 w-13 rounded-full text-green-pale bg-navy flex items-center justify-center font-semibold">
+                  BA
+                </div>
+                <div className="flex flex-col gap-y-2">
+                  <span className="font-semibold">Mrs. Asante</span>
+                  <span className="text-xs font-space text-primary/70">
+                    Good improvement on circuits this week 👏
+                  </span>
+                </div>
+                <div className="flex justify-end">
+                  <div className="bg-red p-1 rounded-full h-fit w-fit"></div>
+                </div>
+              </div>
+              {/* Message Row */}
+              <div className="cursor-pointer grid grid-cols-[auto_1fr_auto] gap-x-4 p-4 border border-line rounded-lg bg-white">
+                <div className="h-13 w-13 rounded-full text-green-pale bg-navy flex items-center justify-center font-semibold">
+                  WB
+                </div>
+                <div className="flex flex-col gap-y-2">
+                  <span className="font-semibold">Mr. Banang-ere</span>
+                  <span className="text-xs font-space text-primary/70">
+                    Good improvement on circuits this week 👏
+                  </span>
+                </div>
+                <div className="flex justify-end">
+                  <div className="bg-red p-1 rounded-full h-fit w-fit"></div>
+                </div>
+              </div>
+            </div>
+            {/* Streak count */}
+            <div className="bg-paper border border-line rounded-lg hover:shadow-xl p-4 flex flex-col gap-y-6">
+              <div className="flex flex-col gap-y-2 justify-between items-baseline">
+                <h4 className="font-mono font-semibold">This week</h4>
+                <p className="font-space text-xs">
+                  Practiced 5 of the last 7 days
+                </p>
+              </div>
+              {/* Message Row */}
+              <div className="grid grid-cols-7 gap-x-4">
+                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
+                  M
+                </p>
+                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
+                  t
+                </p>
+                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
+                  w
+                </p>
+                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
+                  t
+                </p>
+                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
+                  f
+                </p>
+                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
+                  s
+                </p>
+                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
+                  s
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </>

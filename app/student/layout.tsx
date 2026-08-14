@@ -12,8 +12,9 @@ export default function Student_Layout({ children }: LayoutProps<"/">) {
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
-          <div className=" py-2 pl-2 pr-4">
-            <header className="flex h-16 shrink-0 items-center gap-2 border rounded-lg shadow bg-sidebar px-4">
+          <div className="z-20 py-2 pl-2 pr-4 h-20 sticky top-0">
+            <div className="absolute bg-white h-4 w-full z-2 top-0"></div>
+            <header className="relative z-3 flex h-16 shrink-0 items-center gap-2 bg-paper/80  border rounded-lg shadow backdrop-blur px-4">
               <SidebarTrigger className="-ml-1 text-indigo-600/80 hover:text-indigo-600 hover:bg-indigo-600/5" />
               <Separator
                 orientation="vertical"
@@ -22,7 +23,7 @@ export default function Student_Layout({ children }: LayoutProps<"/">) {
             </header>
           </div>
 
-          <main className="p-4">{children}</main>
+          <main className="p-4 z-10">{children}</main>
         </SidebarInset>
       </SidebarProvider>
       {/* <Navbar /> */}
