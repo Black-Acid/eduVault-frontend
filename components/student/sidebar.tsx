@@ -53,8 +53,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenu key={title}>
             <SidebarMenuItem>
               <SidebarMenuButton
-                render={Link}
-                href={url}
                 isActive={isActiveRoute(url)}
                 onClick={() => {
                   if (isMobile) {
@@ -67,7 +65,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     : "group rounded-md"
                 }
               >
-                {title}
+                <Link href={url} className="flex h-full w-full items-center">
+                  {title}
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
