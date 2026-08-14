@@ -9,7 +9,7 @@ import { PageTransitionLoader } from "~/components/general/page-transition-loade
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
 
 const space_mono = Space_Mono({
-  variable: "--font-space",
+  variable: "--",
   subsets: ["latin"],
   weight: ["400", "700"],
 });

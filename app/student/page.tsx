@@ -37,7 +37,7 @@ const Student_Dashboard = async () => {
       <section className="flex flex-col gap-y-8">
         {/* Greetings */}
         <div className="flex flex-col gap-y-4">
-          <p className="font-space text-xs text-green uppercase">{formatted}</p>
+          <p className=" text-xs text-green uppercase">{formatted}</p>
           <h1 className="font-mono text-3xl font-semibold text-ink">
             {greeting}, {username.name}.
           </h1>
@@ -46,14 +46,14 @@ const Student_Dashboard = async () => {
         {/* Last Unfinished Quiz */}
         <div className="p-6 bg-navy rounded-lg continue-card text-white flex flex-col lg:flex-row gap-8 lg:justify-between lg:items-center">
           <div className="flex flex-col gap-y-6">
-            <p className="font-space text-xs text-green-pale uppercase">
+            <p className=" text-xs text-green-pale uppercase">
               continue where you stopped
             </p>
             <h3 className="font-mono text-2xl font-semibold">
               Integrated Science · 2023 · Paper 1
             </h3>
             <div className="flex flex-col gap-y-4">
-              <p className="font-space flex gap-x-4 text-sm text-white/80">
+              <p className=" flex gap-x-4 text-sm text-white/80">
                 <span>Q10 of 40</span>
                 <span>·</span>
                 <span>Started 20 minutes ago</span>
@@ -71,7 +71,7 @@ const Student_Dashboard = async () => {
         {/* Stats Cards */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="flex flex-col gap-y-6 border border-line bg-paper p-4 rounded-lg hover:shadow-xl">
-            <div className="flex gap-x-4 justify-between items-center text-xs uppercase font-space">
+            <div className="flex gap-x-4 justify-between items-center text-xs uppercase ">
               <p className="text-primary/70">Average Score</p>
               <div className="p-2 bg-green/10 rounded-lg text-green">
                 <HugeiconsIcon icon={ChartUpIcon} size={18} />
@@ -82,7 +82,7 @@ const Student_Dashboard = async () => {
             </div>
           </div>
           <div className="flex flex-col gap-y-6 border border-line bg-paper p-4 rounded-lg hover:shadow-xl">
-            <div className="flex gap-x-4 justify-between items-center text-xs uppercase font-space">
+            <div className="flex gap-x-4 justify-between items-center text-xs uppercase ">
               <p className="text-primary/70">Days Streak</p>
               <div className="p-2 bg-orange-600/10 rounded-lg text-orange-600">
                 <HugeiconsIcon icon={Fire02Icon} size={18} />
@@ -94,7 +94,7 @@ const Student_Dashboard = async () => {
             </div>
           </div>
           <div className="flex flex-col gap-y-6 border border-line bg-paper p-4 rounded-lg hover:shadow-xl">
-            <div className="flex gap-x-4 justify-between items-center text-xs uppercase font-space">
+            <div className="flex gap-x-4 justify-between items-center text-xs uppercase ">
               <p className="text-primary/70">Questions Done</p>
               <div className="p-2 bg-blue-600/10 rounded-lg text-blue-600">
                 <HugeiconsIcon icon={Pen02Icon} size={18} />
@@ -105,7 +105,7 @@ const Student_Dashboard = async () => {
             </div>
           </div>
           <div className="flex flex-col gap-y-6 border border-line bg-paper p-4 rounded-lg hover:shadow-xl">
-            <div className="flex gap-x-4 justify-between items-center text-xs uppercase font-space">
+            <div className="flex gap-x-4 justify-between items-center text-xs uppercase ">
               <p className="text-primary/70">Tutor Replies</p>
               <div className="p-2 bg-red-600/10 rounded-lg text-red-600">
                 <HugeiconsIcon icon={Mail01Icon} size={18} />
@@ -128,7 +128,7 @@ const Student_Dashboard = async () => {
                 </h4>
                 <Link
                   href={"/student"}
-                  className="text-green text-xs hover:underline font-space"
+                  className="text-green text-xs hover:underline "
                 >
                   See all subjects
                 </Link>
@@ -138,7 +138,7 @@ const Student_Dashboard = async () => {
               <div className="pb-4 border-b border-line grid grid-cols-[1fr_120px_60px] gap-2 items-center last:border-0">
                 <div className="flex flex-col gap-y-2">
                   <span className="font-semibold">Integrated Science</span>
-                  <span className="text-xs font-space text-primary/70">
+                  <span className="text-xs  text-primary/70">
                     340 attempted
                   </span>
                 </div>
@@ -156,7 +156,7 @@ const Student_Dashboard = async () => {
               <div className="pb-4 border-b border-line grid grid-cols-[1fr_120px_60px] gap-2 items-center last:border-0">
                 <div className="flex flex-col gap-y-2">
                   <span className="font-semibold">Core Mathematics</span>
-                  <span className="text-xs font-space text-primary/70">
+                  <span className="text-xs  text-primary/70">
                     620 attempted
                   </span>
                 </div>
@@ -174,7 +174,7 @@ const Student_Dashboard = async () => {
               <div className="pb-4 border-b border-line grid grid-cols-[1fr_120px_60px] gap-2 items-center last:border-0">
                 <div className="flex flex-col gap-y-2">
                   <span className="font-semibold">English Language</span>
-                  <span className="text-xs font-space text-primary/70">
+                  <span className="text-xs  text-primary/70">
                     430 attempted
                   </span>
                 </div>
@@ -192,7 +192,7 @@ const Student_Dashboard = async () => {
               <div className="pb-4 border-b border-line grid grid-cols-[1fr_120px_60px] gap-2 items-center last:border-0">
                 <div className="flex flex-col gap-y-2">
                   <span className="font-semibold">Chemistry</span>
-                  <span className="text-xs font-space text-primary/70">
+                  <span className="text-xs  text-primary/70">
                     340 attempted
                   </span>
                 </div>
@@ -210,7 +210,7 @@ const Student_Dashboard = async () => {
               <div className="pb-4 border-b border-line grid grid-cols-[1fr_120px_60px] gap-2 items-center last:border-0">
                 <div className="flex flex-col gap-y-2">
                   <span className="font-semibold">Physics</span>
-                  <span className="text-xs font-space text-primary/70">
+                  <span className="text-xs  text-primary/70">
                     320 attempted
                   </span>
                 </div>
@@ -229,7 +229,7 @@ const Student_Dashboard = async () => {
               <div className="pb-4 border-b border-line grid grid-cols-[1fr_120px_60px] gap-2 items-center last:border-0">
                 <div className="flex flex-col gap-y-2">
                   <span className="font-semibold">Elective Maths</span>
-                  <span className="text-xs font-space text-primary/70">
+                  <span className="text-xs  text-primary/70">
                     830 attempted
                   </span>
                 </div>
@@ -253,7 +253,7 @@ const Student_Dashboard = async () => {
                 </h4>
                 <Link
                   href={"/student"}
-                  className="text-green text-xs hover:underline font-space"
+                  className="text-green text-xs hover:underline "
                 >
                   Full history
                 </Link>
@@ -267,14 +267,14 @@ const Student_Dashboard = async () => {
                   <span className="font-semibold">
                     Core Maths · 2024 · Paper 2
                   </span>
-                  <span className="text-xs font-space text-primary/70">
+                  <span className="text-xs  text-primary/70">
                     32/40 correct
                   </span>
                 </div>
                 <div className="flex justify-end">
                   <Link
                     href={"/student"}
-                    className="text-green text-xs hover:underline font-space"
+                    className="text-green text-xs hover:underline "
                   >
                     Review with AI
                   </Link>
@@ -289,14 +289,14 @@ const Student_Dashboard = async () => {
                   <span className="font-semibold">
                     Physics · 2021 · Paper 2
                   </span>
-                  <span className="text-xs font-space text-primary/70">
+                  <span className="text-xs  text-primary/70">
                     11/25 correct
                   </span>
                 </div>
                 <div className="flex justify-end">
                   <Link
                     href={"/student"}
-                    className="text-green text-xs hover:underline font-space"
+                    className="text-green text-xs hover:underline "
                   >
                     Review with AI
                   </Link>
@@ -311,14 +311,14 @@ const Student_Dashboard = async () => {
                   <span className="font-semibold">
                     English Language · 2023 · Paper 3
                   </span>
-                  <span className="text-xs font-space text-primary/70">
+                  <span className="text-xs  text-primary/70">
                     32/40 correct
                   </span>
                 </div>
                 <div className="flex justify-end">
                   <Link
                     href={"/student"}
-                    className="text-green text-xs hover:underline font-space"
+                    className="text-green text-xs hover:underline "
                   >
                     Review with AI
                   </Link>
@@ -343,7 +343,7 @@ const Student_Dashboard = async () => {
                 </div>
                 <div className="flex flex-col gap-y-2">
                   <span className="font-semibold">Mr. Boateng</span>
-                  <span className="text-xs font-space text-primary/70">
+                  <span className="text-xs  text-primary/70">
                     Redo Q7–9 on logs before we speak — you&apos;re close.
                   </span>
                 </div>
@@ -358,7 +358,7 @@ const Student_Dashboard = async () => {
                 </div>
                 <div className="flex flex-col gap-y-2">
                   <span className="font-semibold">Mrs. Asante</span>
-                  <span className="text-xs font-space text-primary/70">
+                  <span className="text-xs  text-primary/70">
                     Good improvement on circuits this week 👏
                   </span>
                 </div>
@@ -373,7 +373,7 @@ const Student_Dashboard = async () => {
                 </div>
                 <div className="flex flex-col gap-y-2">
                   <span className="font-semibold">Mr. Banang-ere</span>
-                  <span className="text-xs font-space text-primary/70">
+                  <span className="text-xs  text-primary/70">
                     Good improvement on circuits this week 👏
                   </span>
                 </div>
@@ -386,9 +386,7 @@ const Student_Dashboard = async () => {
             <div className="bg-paper border border-line rounded-lg hover:shadow-xl p-4 flex flex-col gap-y-6">
               <div className="flex flex-col gap-y-2 justify-between items-baseline">
                 <h4 className="font-mono font-semibold">This week</h4>
-                <p className="font-space text-xs">
-                  Practiced 5 of the last 7 days
-                </p>
+                <p className=" text-xs">Practiced 5 of the last 7 days</p>
               </div>
               {/* Message Row */}
               <div className="grid grid-cols-7 gap-x-4">
