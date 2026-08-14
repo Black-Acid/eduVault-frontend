@@ -93,7 +93,7 @@ export default function ChatAiClient({
   if (!resultsData || wrongQuestions.length === 0 || isCompleted) {
     return (
       <section className="flex flex-col gap-y-4 border rounded-lg items-center justify-center p-20 min-h-[50vh] text-center">
-        <p className="text-indigo-600 text-xl font-semibold">
+        <p className="text-blue-600 text-xl font-semibold">
           It was nice reviewing your wrong answers together.
         </p>
         <p className="text-primary/70 text-sm">
@@ -106,7 +106,7 @@ export default function ChatAiClient({
   return (
     <section className="flex flex-col max-w-2xl mx-auto border rounded-xl p-8 gap-y-6 bg-white shadow-sm my-10">
       <div className="flex justify-between items-center border-b pb-4">
-        <h2 className="text-xl font-bold text-indigo-600">AI Review Session</h2>
+        <h2 className="text-xl font-bold text-blue-600">AI Review Session</h2>
         <span className="text-sm font-medium text-primary/60">
           Question {currentIndex + 1} of {wrongQuestions.length}
         </span>
@@ -114,7 +114,7 @@ export default function ChatAiClient({
 
       {/* Demo Question Container */}
       <div className="bg-primary-foreground p-5 rounded-lg border border-primary/10 flex flex-col gap-y-2">
-        <span className="text-xs font-semibold tracking-wider text-indigo-600 uppercase">
+        <span className="text-xs font-semibold tracking-wider text-blue-600 uppercase">
           Demo Question ID: {currentWrong.question_id}
         </span>
         <p className="text-lg font-medium text-primary">
@@ -124,8 +124,8 @@ export default function ChatAiClient({
       </div>
 
       {/* AI Explanation Result */}
-      <div className="bg-indigo-600/5 p-5 rounded-lg border border-indigo-600/20 flex flex-col gap-y-2 min-h-30">
-        <span className="text-xs font-semibold tracking-wider text-indigo-600 uppercase">
+      <div className="bg-primary-foreground p-5 rounded-lg border border-blue-600/20 flex flex-col gap-y-2 min-h-30">
+        <span className="text-xs font-semibold tracking-wider text-blue-600 uppercase">
           AI Explanation
         </span>
         {loading ? (

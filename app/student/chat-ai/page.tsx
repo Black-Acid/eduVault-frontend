@@ -6,10 +6,12 @@ const Chat_Ai = async () => {
   const dataCookie = cookieStore.get("quiz_results")?.value;
   const quiz_results = dataCookie ? JSON.parse(dataCookie) : null;
 
+  console.log(quiz_results);
+
   if (!quiz_results) {
     return (
       <section className="flex border rounded-lg items-center justify-center p-20 min-h-[50vh]">
-        <p className="text-center text-indigo-600/70 text-xl font-medium">
+        <p className="text-center text-blue-600/70 text-xl font-medium">
           Please attempt a quiz before you can review with AI.
         </p>
       </section>

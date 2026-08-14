@@ -11,6 +11,16 @@ import {
   Pen02Icon,
 } from "@hugeicons/core-free-icons";
 import Link from "next/link";
+import { DayActivity, StreakHeatmap } from "~/components/dashboard/heat-map";
+
+const mockActivity: DayActivity[] = Array.from({ length: 365 }).map((_, i) => {
+  const d = new Date();
+  d.setDate(d.getDate() - (364 - i));
+  return {
+    date: d.toISOString().slice(0, 10),
+    count: Math.random() < 0.3 ? 0 : Math.floor(Math.random() * 20),
+  };
+});
 
 const Student_Dashboard = async () => {
   const cookieStore = await cookies();
@@ -37,43 +47,26 @@ const Student_Dashboard = async () => {
       <section className="flex flex-col gap-y-8">
         {/* Greetings */}
         <div className="flex flex-col gap-y-4">
-          <p className=" text-xs text-green uppercase">{formatted}</p>
+          <p className=" text-xs text-blue-600 uppercase">{formatted}</p>
           <h1 className="font-mono text-3xl font-semibold text-ink">
             {greeting}, {username.name}.
           </h1>
         </div>
 
         {/* Last Unfinished Quiz */}
-        <div className="p-6 bg-navy rounded-lg continue-card text-white flex flex-col lg:flex-row gap-8 lg:justify-between lg:items-center">
-          <div className="flex flex-col gap-y-6">
-            <p className=" text-xs text-green-pale uppercase">
-              continue where you stopped
-            </p>
-            <h3 className="font-mono text-2xl font-semibold">
-              Integrated Science · 2023 · Paper 1
-            </h3>
-            <div className="flex flex-col gap-y-4">
-              <p className=" flex gap-x-4 text-sm text-white/80">
-                <span>Q10 of 40</span>
-                <span>·</span>
-                <span>Started 20 minutes ago</span>
-              </p>
-              <ProgressPrimitive.Root value={51}>
-                <ProgressTrack className="bg-green-pale/20">
-                  <ProgressIndicator className="bg-green-pale" />
-                </ProgressTrack>
-              </ProgressPrimitive.Root>
-            </div>
-          </div>
-          <Button variant={"white_navy"}>Resume Paper</Button>
-        </div>
+        {/* <div className="p-6 bg-navy rounded-lg continue-card text-white flex flex-col lg:flex-row gap-8 lg:justify-between lg:items-center">
+          
+        </div> */}
+
+        {/* Heat Map Section */}
+        <StreakHeatmap activity={mockActivity} />
 
         {/* Stats Cards */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="flex flex-col gap-y-6 border border-line bg-paper p-4 rounded-lg hover:shadow-xl">
+          <div className="flex flex-col gap-y-6 border border-line bg-primary-foreground p-4 rounded-lg hover:shadow-xl">
             <div className="flex gap-x-4 justify-between items-center text-xs uppercase ">
               <p className="text-primary/70">Average Score</p>
-              <div className="p-2 bg-green/10 rounded-lg text-green">
+              <div className="p-2 bg-green-600/10 rounded-lg text-green-600">
                 <HugeiconsIcon icon={ChartUpIcon} size={18} />
               </div>
             </div>
@@ -81,7 +74,7 @@ const Student_Dashboard = async () => {
               <span className="text-3xl font-semibold">68%</span>
             </div>
           </div>
-          <div className="flex flex-col gap-y-6 border border-line bg-paper p-4 rounded-lg hover:shadow-xl">
+          <div className="flex flex-col gap-y-6 border border-line bg-primary-foreground p-4 rounded-lg hover:shadow-xl">
             <div className="flex gap-x-4 justify-between items-center text-xs uppercase ">
               <p className="text-primary/70">Days Streak</p>
               <div className="p-2 bg-orange-600/10 rounded-lg text-orange-600">
@@ -93,7 +86,7 @@ const Student_Dashboard = async () => {
               <span className="text-xs">Practice today to keep it</span>
             </div>
           </div>
-          <div className="flex flex-col gap-y-6 border border-line bg-paper p-4 rounded-lg hover:shadow-xl">
+          <div className="flex flex-col gap-y-6 border border-line bg-primary-foreground p-4 rounded-lg hover:shadow-xl">
             <div className="flex gap-x-4 justify-between items-center text-xs uppercase ">
               <p className="text-primary/70">Questions Done</p>
               <div className="p-2 bg-blue-600/10 rounded-lg text-blue-600">
@@ -104,7 +97,7 @@ const Student_Dashboard = async () => {
               <span className="text-3xl font-semibold">328</span>
             </div>
           </div>
-          <div className="flex flex-col gap-y-6 border border-line bg-paper p-4 rounded-lg hover:shadow-xl">
+          <div className="flex flex-col gap-y-6 border border-line bg-primary-foreground p-4 rounded-lg hover:shadow-xl">
             <div className="flex gap-x-4 justify-between items-center text-xs uppercase ">
               <p className="text-primary/70">Tutor Replies</p>
               <div className="p-2 bg-red-600/10 rounded-lg text-red-600">
@@ -121,14 +114,14 @@ const Student_Dashboard = async () => {
         {/* Board */}
         <div className="grid lg:grid-cols-12 gap-x-4 gap-y-8">
           <div className="lg:col-span-7 flex flex-col gap-y-8">
-            <div className="bg-paper border border-line rounded-lg hover:shadow-xl p-4 flex flex-col gap-y-6">
+            <div className="bg-primary-foreground border border-line rounded-lg hover:shadow-xl p-4 flex flex-col gap-y-6">
               <div className="flex gap-x-4 justify-between items-baseline">
                 <h4 className="font-mono font-semibold text-xl">
                   Subject Mastery
                 </h4>
                 <Link
                   href={"/student"}
-                  className="text-green text-xs hover:underline "
+                  className="text-blue-600 text-xs hover:underline "
                 >
                   See all subjects
                 </Link>
@@ -143,8 +136,8 @@ const Student_Dashboard = async () => {
                   </span>
                 </div>
                 <ProgressPrimitive.Root value={75}>
-                  <ProgressTrack className="bg-green/20">
-                    <ProgressIndicator className="bg-green" />
+                  <ProgressTrack className="bg-blue-600/20">
+                    <ProgressIndicator className="bg-blue-600" />
                   </ProgressTrack>
                 </ProgressPrimitive.Root>
 
@@ -161,8 +154,8 @@ const Student_Dashboard = async () => {
                   </span>
                 </div>
                 <ProgressPrimitive.Root value={85}>
-                  <ProgressTrack className="bg-green/20">
-                    <ProgressIndicator className="bg-green" />
+                  <ProgressTrack className="bg-blue-600/20">
+                    <ProgressIndicator className="bg-blue-600" />
                   </ProgressTrack>
                 </ProgressPrimitive.Root>
 
@@ -179,8 +172,8 @@ const Student_Dashboard = async () => {
                   </span>
                 </div>
                 <ProgressPrimitive.Root value={52}>
-                  <ProgressTrack className="bg-green/20">
-                    <ProgressIndicator className="bg-green" />
+                  <ProgressTrack className="bg-blue-600/20">
+                    <ProgressIndicator className="bg-blue-600" />
                   </ProgressTrack>
                 </ProgressPrimitive.Root>
 
@@ -215,8 +208,8 @@ const Student_Dashboard = async () => {
                   </span>
                 </div>
                 <ProgressPrimitive.Root value={65}>
-                  <ProgressTrack className="bg-green/20">
-                    <ProgressIndicator className="bg-green" />
+                  <ProgressTrack className="bg-blue-600/20">
+                    <ProgressIndicator className="bg-blue-600" />
                   </ProgressTrack>
                 </ProgressPrimitive.Root>
 
@@ -234,8 +227,8 @@ const Student_Dashboard = async () => {
                   </span>
                 </div>
                 <ProgressPrimitive.Root value={95}>
-                  <ProgressTrack className="bg-green/20">
-                    <ProgressIndicator className="bg-green" />
+                  <ProgressTrack className="bg-blue-600/20">
+                    <ProgressIndicator className="bg-blue-600" />
                   </ProgressTrack>
                 </ProgressPrimitive.Root>
 
@@ -246,21 +239,21 @@ const Student_Dashboard = async () => {
             </div>
 
             {/* Script Review */}
-            <div className="bg-paper border border-line rounded-lg hover:shadow-xl p-4 flex flex-col gap-y-6">
+            <div className="bg-primary-foreground border border-line rounded-lg hover:shadow-xl p-4 flex flex-col gap-y-6">
               <div className="flex gap-x-4 justify-between items-baseline">
                 <h4 className="font-mono font-semibold text-xl">
                   Recent Scripts
                 </h4>
                 <Link
                   href={"/student"}
-                  className="text-green text-xs hover:underline "
+                  className="text-blue-600 text-xs hover:underline "
                 >
                   Full history
                 </Link>
               </div>
               {/* Script Row */}
               <div className="grid grid-cols-[auto_1fr_auto] gap-x-4 items-center p-4 border border-line rounded-lg bg-white">
-                <div className="h-13 w-13 rounded-full border-3 text-green border-green flex items-center justify-center font-semibold font-mono">
+                <div className="h-13 w-13 rounded-full border-3 text-blue-600 border-blue-600 flex items-center justify-center font-semibold font-mono">
                   78%
                 </div>
                 <div className="flex flex-col gap-y-2">
@@ -274,7 +267,7 @@ const Student_Dashboard = async () => {
                 <div className="flex justify-end">
                   <Link
                     href={"/student"}
-                    className="text-green text-xs hover:underline "
+                    className="text-blue-600 text-xs hover:underline "
                   >
                     Review with AI
                   </Link>
@@ -296,7 +289,7 @@ const Student_Dashboard = async () => {
                 <div className="flex justify-end">
                   <Link
                     href={"/student"}
-                    className="text-green text-xs hover:underline "
+                    className="text-blue-600 text-xs hover:underline "
                   >
                     Review with AI
                   </Link>
@@ -304,7 +297,7 @@ const Student_Dashboard = async () => {
               </div>
               {/* Script Row */}
               <div className="grid grid-cols-[auto_1fr_auto] gap-x-4 items-center p-4 border border-line rounded-lg bg-white">
-                <div className="h-13 w-13 rounded-full border-3 text-green border-green flex items-center justify-center font-semibold font-mono">
+                <div className="h-13 w-13 rounded-full border-3 text-blue-600 border-blue-600 flex items-center justify-center font-semibold font-mono">
                   81%
                 </div>
                 <div className="flex flex-col gap-y-2">
@@ -318,7 +311,7 @@ const Student_Dashboard = async () => {
                 <div className="flex justify-end">
                   <Link
                     href={"/student"}
-                    className="text-green text-xs hover:underline "
+                    className="text-blue-600 text-xs hover:underline "
                   >
                     Review with AI
                   </Link>
@@ -330,7 +323,7 @@ const Student_Dashboard = async () => {
           {/* Second Side of the board */}
           <div className="lg:col-span-5 flex flex-col gap-y-8">
             {/* Messages From Tutor */}
-            <div className="bg-paper border border-line rounded-lg hover:shadow-xl p-4 flex flex-col gap-y-6">
+            <div className="bg-primary-foreground border border-line rounded-lg hover:shadow-xl p-4 flex flex-col gap-y-6">
               <div className="flex gap-x-4 justify-between items-baseline">
                 <h4 className="font-mono font-semibold text-2xl">
                   Messages from your tutors
@@ -338,7 +331,7 @@ const Student_Dashboard = async () => {
               </div>
               {/* Message Row */}
               <div className="cursor-pointer grid grid-cols-[auto_1fr_auto] gap-x-4 p-4 border border-line rounded-lg bg-white">
-                <div className="h-13 w-13 rounded-full text-green-pale bg-navy flex items-center justify-center font-semibold">
+                <div className="h-13 w-13 rounded-full text-blue-400 bg-navy flex items-center justify-center font-semibold">
                   JB
                 </div>
                 <div className="flex flex-col gap-y-2">
@@ -353,7 +346,7 @@ const Student_Dashboard = async () => {
               </div>
               {/* Message Row */}
               <div className="cursor-pointer grid grid-cols-[auto_1fr_auto] gap-x-4 p-4 border border-line rounded-lg bg-white">
-                <div className="h-13 w-13 rounded-full text-green-pale bg-navy flex items-center justify-center font-semibold">
+                <div className="h-13 w-13 rounded-full text-blue-400 bg-navy flex items-center justify-center font-semibold">
                   BA
                 </div>
                 <div className="flex flex-col gap-y-2">
@@ -368,7 +361,7 @@ const Student_Dashboard = async () => {
               </div>
               {/* Message Row */}
               <div className="cursor-pointer grid grid-cols-[auto_1fr_auto] gap-x-4 p-4 border border-line rounded-lg bg-white">
-                <div className="h-13 w-13 rounded-full text-green-pale bg-navy flex items-center justify-center font-semibold">
+                <div className="h-13 w-13 rounded-full text-blue-400 bg-navy flex items-center justify-center font-semibold">
                   WB
                 </div>
                 <div className="flex flex-col gap-y-2">
@@ -383,29 +376,29 @@ const Student_Dashboard = async () => {
               </div>
             </div>
             {/* Streak count */}
-            <div className="bg-paper border border-line rounded-lg hover:shadow-xl p-4 flex flex-col gap-y-6">
+            <div className="bg-primary-foreground border border-line rounded-lg hover:shadow-xl p-4 flex flex-col gap-y-6">
               <div className="flex flex-col gap-y-2 justify-between items-baseline">
                 <h4 className="font-mono font-semibold text-2xl">This week</h4>
                 <p className=" text-xs">Practiced 5 of the last 7 days</p>
               </div>
               {/* Message Row */}
               <div className="grid grid-cols-7 gap-x-4">
-                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
+                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-blue-600 rounded-lg text-white font-medium flex items-center justify-center uppercase">
                   M
                 </p>
-                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
+                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-blue-600 rounded-lg text-white font-medium flex items-center justify-center uppercase">
                   t
                 </p>
-                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
+                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-blue-600 rounded-lg text-white font-medium flex items-center justify-center uppercase">
                   w
                 </p>
                 <p className="w-8 h-8 sm:h-10 sm:w-10 bg-primary/10 rounded-lg text-primary/70 font-medium flex items-center justify-center uppercase">
                   t
                 </p>
-                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
+                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-blue-600 rounded-lg text-white font-medium flex items-center justify-center uppercase">
                   f
                 </p>
-                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
+                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-blue-600 rounded-lg text-white font-medium flex items-center justify-center uppercase">
                   s
                 </p>
                 <p className="w-8 h-8 sm:h-10 sm:w-10 bg-primary/10 rounded-lg text-primary/70 font-medium flex items-center justify-center uppercase">

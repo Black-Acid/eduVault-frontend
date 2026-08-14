@@ -38,7 +38,7 @@ const FEATURES: fetures_types[] = [
 
 const how_it_works: { headline: string; description: string }[] = [
   {
-    headline: "Pick a paper",
+    headline: "Pick a Paper",
     description:
       "Choose your subject and exam year from real WASSCE/BECE past questions.",
   },
@@ -73,13 +73,13 @@ export default function Home() {
     <>
       <section className="grid lg:grid-cols-11 gap-16 py-10">
         <div className="lg:col-span-6 flex flex-col gap-y-8">
-          <p className="rounded-full uppercase text-xs font-medium w-fit text-indigo-600 bg-indigo-600/10 px-2 py-1 border border-indigo-600">
+          <p className="rounded-full uppercase text-xs font-medium w-fit border-dashed text-blue-600 bg-primary-foreground px-2 py-1 border border-blue-600">
             Built for Ghanaian Students
           </p>
           <div className="flex flex-col gap-y-4">
             <h2 className="text-5xl font-mono leading-normal font-semibold max-w-3xl">
               Practice WASSCE.{" "}
-              <span className="text-indigo-600">Track every mark.</span>
+              <span className="text-blue-600">Track every mark.</span>
             </h2>
             <p className="text-lg leading-relaxed text-primary/80 max-w-3xl">
               Free core-subject quizzes, saved progress, direct tutor support,
@@ -109,13 +109,13 @@ export default function Home() {
           />
         </div>
       </section>
-      <section className="grid lg:grid-cols-3 gap-4 lg:gap-8 py-20 bg-indigo-600/10 -mx-4 px-4">
-        <p className="col-span-full uppercase rounded-full text-xs font-medium w-fit text-indigo-600 bg-indigo-600/10 px-2 py-1 border border-indigo-600">
+      <section className="grid lg:grid-cols-3 gap-4 lg:gap-8 py-20 bg-primary-foreground -mx-4 px-4">
+        <p className="border-dashed col-span-full uppercase rounded-full text-xs font-medium w-fit text-blue-600 bg-primary-foreground px-2 py-1 border border-blue-600">
           The features
         </p>
         <h2 className="col-span-full text-4xl font-mono font-semibold max-w-xl">
-          Everything you <span className="text-indigo-600">need</span> before{" "}
-          <span className="text-indigo-600">results day</span>
+          Everything you <span className="text-blue-600">need</span> before{" "}
+          <span className="text-blue-600">results day</span>
         </h2>
         <p className="col-span-full text-lg max-w-2xl text-primary/80">
           Master core subjects, track your learning milestones, and get expert
@@ -124,7 +124,7 @@ export default function Home() {
         {FEATURES.map(({ description, headline, icon }) => (
           <div
             key={description}
-            className="flex flex-col gap-y-4 lg:gap-y-8 rounded-lg border border-indigo-600/70 bg-indigo-600/10 p-4 lg:p-8"
+            className="flex flex-col gap-y-4 lg:gap-y-8 rounded-lg border border-blue-600/70 bg-primary-foreground p-4 lg:p-8"
           >
             <HugeiconsIcon
               icon={icon}
@@ -140,7 +140,7 @@ export default function Home() {
         ))}
       </section>
       <section className="py-20 bg-primary -mt-20 -mx-4 grid md:grid-cols-2 text-white/80 px-4 gap-8 md:gap-8">
-        <p className="col-span-full uppercase rounded-full text-xs font-medium w-fit text-indigo-600 bg-indigo-600/10 px-2 py-1 border border-indigo-600">
+        <p className="col-span-full uppercase rounded-full text-xs font-medium w-fit text-blue-600 bg-primary border-dashed px-2 py-1 border border-blue-600">
           The flow
         </p>
         <h2 className="col-span-full text-4xl font-mono font-semibold">
@@ -152,7 +152,7 @@ export default function Home() {
         </p>
         {how_it_works.map(({ description, headline }, idx) => (
           <div key={headline} className="flex flex-col gap-y-4">
-            <div className="w-16 h-16 text-indigo-600/60 rounded-full flex items-center justify-center border-2 text-xl border-indigo-600/60">
+            <div className="w-16 h-16 text-blue-600/60 rounded-full flex items-center justify-center border-2 text-xl border-blue-600/60">
               <span>{idx + 1}</span>
             </div>
             <h3 className="text-2xl font-mono font-semibold text-white">
@@ -163,7 +163,7 @@ export default function Home() {
         ))}
       </section>
       <section className="py-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        <p className="col-span-full uppercase rounded-full text-xs font-medium w-fit text-indigo-600 bg-indigo-600/10 px-2 py-1 border border-indigo-600">
+        <p className="border-dashed col-span-full uppercase rounded-full text-xs font-medium w-fit text-blue-600 bg-primary-foreground px-2 py-1 border border-blue-600">
           Coverage
         </p>
         <h2 className="col-span-full text-4xl font-mono font-semibold">
@@ -176,9 +176,9 @@ export default function Home() {
         {subjects.map(({ name, total, type }) => (
           <div
             key={name}
-            className="p-4 border border-indigo-600/40 rounded-lg bg-indigo-600/10 flex flex-col gap-y-4"
+            className="p-4 border border-blue-600/40 rounded-lg bg-primary-foreground flex flex-col gap-y-4"
           >
-            <p className="text-indigo-600 text-sm">{type}</p>
+            <p className="text-blue-600 text-sm">{type}</p>
             <h3 className="text-primary font-mono text-2xl font-semibold">
               {name}
             </h3>
@@ -186,8 +186,8 @@ export default function Home() {
           </div>
         ))}
       </section>
-      <section className="bg-indigo-600 text-white/80 -mx-4 px-4 py-20 flex flex-col items-center gap-y-8">
-        <p className="col-span-full uppercase rounded-full text-xs font-medium w-fit text-white bg-white/10 px-2 py-1 border border-white">
+      <section className="bg-blue-600 text-white/80 -mx-4 px-4 py-20 flex flex-col items-center gap-y-8">
+        <p className="border-dashed col-span-full uppercase rounded-full text-xs font-medium w-fit text-white bg-white/10 px-2 py-1 border border-white">
           Get Started
         </p>
         <h2 className="col-span-full text-4xl font-mono font-semibold text-white">

@@ -167,7 +167,7 @@ export default function Quiz_Client({
         <div className="flex items-center justify-between font-medium">
           <span className="text-primary/70">
             Question{" "}
-            <span className="font-semibold text-indigo-600">
+            <span className="font-semibold text-blue-600">
               {currentIndex + 1}
             </span>{" "}
             of {questions.length}
@@ -176,7 +176,7 @@ export default function Quiz_Client({
             className={`px-3 py-1 rounded-full text-sm font-semibold ${
               timeLeft < 10
                 ? "bg-red-100 text-red-600 animate-pulse"
-                : "bg-indigo-600/5 text-indigo-600/70"
+                : "bg-primary-foreground text-blue-600/70"
             }`}
           >
             ⏱️ {timeLeft}s remaining

@@ -45,13 +45,13 @@ export default function Choose_Subject({ subjects }: { subjects: Subjects[] }) {
   return (
     <div className="flex items-center justify-center p-4">
       <div className="bg-sidebar rounded-2xl shadow-xl max-w-md w-full p-8 text-center flex flex-col border gap-y-6">
-        <h1 className="text-2xl font-bold text-indigo-600">Choose a Subject</h1>
+        <h1 className="text-2xl font-bold text-blue-600">Choose a Subject</h1>
         <p className="text-primary/70">Select a subject to start the quiz.</p>
 
         <form onSubmit={handleStartQuiz} className="flex flex-col gap-y-4">
           {/* Subject Selection */}
           <div className="flex flex-col gap-y-1.5">
-            <label className="block text-xs font-semibold text-indigo-600/70 uppercase tracking-wider">
+            <label className="block text-xs font-semibold text-blue-600/70 uppercase tracking-wider">
               Subject
             </label>
             <Select
