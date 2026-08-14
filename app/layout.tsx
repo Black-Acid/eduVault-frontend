@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
-import { Space_Mono, Fraunces, Figtree } from "next/font/google";
+import { Space_Mono, Fraunces, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import { cn } from "~/lib/utils";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { Toaster } from "~/components/ui/toast";
 import { PageTransitionLoader } from "~/components/general/page-transition-loader";
 
-const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
+const source_sans_3 = Source_Sans_3({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 const space_mono = Space_Mono({
   variable: "--",
@@ -34,7 +37,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         space_mono.variable,
         geistMono.variable,
         "font-sans",
-        figtree.variable,
+        source_sans_3.variable,
       )}
     >
       <body className="min-h-full flex flex-col">

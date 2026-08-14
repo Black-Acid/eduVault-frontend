@@ -45,8 +45,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar variant="floating" {...props}>
       <SidebarHeader className="text-lg font-semibold h-16 flex justify-start flex-row items-center px-4 border-b">
         <div className="flex items-baseline gap-0.5 text-2xl tracking-tighter leading-none font-mono">
-          <span className="font-black text-blue-600">Edu</span>
-          <span className="font-semibold text-slate-700">Vault</span>
+          <span className="font-black text-green">Edu</span>
+          <span className="font-semibold text-primary/70">Vault</span>
         </div>
       </SidebarHeader>
       <SidebarContent className="px-2 py-4">
@@ -62,7 +62,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 }}
                 className={
                   isActiveRoute(url)
-                    ? "group rounded-md bg-blue-600! text-white! shadow-sm hover:bg-blue-600! hover:text-white!"
+                    ? "group rounded-md bg-green! text-white! shadow-sm hover:bg-green! hover:text-white!"
                     : "group rounded-md"
                 }
               >

@@ -332,7 +332,7 @@ const Student_Dashboard = async () => {
             {/* Messages From Tutor */}
             <div className="bg-paper border border-line rounded-lg hover:shadow-xl p-4 flex flex-col gap-y-6">
               <div className="flex gap-x-4 justify-between items-baseline">
-                <h4 className="font-mono font-semibold text-xl">
+                <h4 className="font-mono font-semibold text-2xl">
                   Messages from your tutors
                 </h4>
               </div>
@@ -385,7 +385,7 @@ const Student_Dashboard = async () => {
             {/* Streak count */}
             <div className="bg-paper border border-line rounded-lg hover:shadow-xl p-4 flex flex-col gap-y-6">
               <div className="flex flex-col gap-y-2 justify-between items-baseline">
-                <h4 className="font-mono font-semibold">This week</h4>
+                <h4 className="font-mono font-semibold text-2xl">This week</h4>
                 <p className=" text-xs">Practiced 5 of the last 7 days</p>
               </div>
               {/* Message Row */}
@@ -399,7 +399,7 @@ const Student_Dashboard = async () => {
                 <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
                   w
                 </p>
-                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
+                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-primary/10 rounded-lg text-primary/70 font-medium flex items-center justify-center uppercase">
                   t
                 </p>
                 <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
@@ -408,7 +408,7 @@ const Student_Dashboard = async () => {
                 <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
                   s
                 </p>
-                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-green rounded-lg text-white font-medium flex items-center justify-center uppercase">
+                <p className="w-8 h-8 sm:h-10 sm:w-10 bg-primary/10 rounded-lg text-primary/70 font-medium flex items-center justify-center uppercase">
                   s
                 </p>
               </div>
