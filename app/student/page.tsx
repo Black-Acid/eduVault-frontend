@@ -11,11 +11,9 @@ import {
   Pen02Icon,
 } from "@hugeicons/core-free-icons";
 import Link from "next/link";
-import {
-  DayActivity,
-  StreakHeatmap,
-} from "~/components/dashboard/heat-map";
 import { getCurrentStreak } from "~/components/dashboard/streak-utils";
+import { DayActivity } from "~/components/dashboard/streak-utils";
+import { StreakHeatmap } from "~/components/dashboard/heat-map";
 
 const mockActivity: DayActivity[] = Array.from({ length: 365 }).map((_, i) => {
   const d = new Date();
