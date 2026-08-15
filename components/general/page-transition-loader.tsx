@@ -7,37 +7,10 @@ export function PageTransitionLoader() {
   const router = useRouter();
   const pathname = usePathname();
   const [visible, setVisible] = React.useState(false);
-  const [pendingRequests, setPendingRequests] = React.useState(0);
   const pendingNavigationRef = React.useRef<number | null>(null);
   const targetPathRef = React.useRef<string | null>(null);
   const startedAtRef = React.useRef<number>(0);
-  const originalFetchRef = React.useRef<typeof window.fetch | null>(null);
-  const minimumVisibleMs = 2500;
-
-  React.useEffect(() => {
-    if (originalFetchRef.current) {
-      return;
-    }
-
-    originalFetchRef.current = window.fetch.bind(window);
-
-    window.fetch = async (...args) => {
-      setPendingRequests((current) => current + 1);
-
-      try {
-        return await originalFetchRef.current!(...args);
-      } finally {
-        setPendingRequests((current) => Math.max(0, current - 1));
-      }
-    };
-
-    return () => {
-      if (originalFetchRef.current) {
-        window.fetch = originalFetchRef.current;
-        originalFetchRef.current = null;
-      }
-    };
-  }, []);
+  const minimumVisibleMs = 1200;
 
   React.useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -90,7 +63,7 @@ export function PageTransitionLoader() {
 
       pendingNavigationRef.current = window.setTimeout(() => {
         router.push(nextPath);
-      }, 160);
+      }, 220);
     };
 
     document.addEventListener("click", handleClick, true);
@@ -109,10 +82,6 @@ export function PageTransitionLoader() {
       return;
     }
 
-    if (pendingRequests > 0) {
-      return;
-    }
-
     const elapsed = Date.now() - startedAtRef.current;
     const remaining = Math.max(minimumVisibleMs - elapsed, 0);
 
@@ -122,7 +91,7 @@ export function PageTransitionLoader() {
     }, remaining);
 
     return () => window.clearTimeout(timeout);
-  }, [pathname, pendingRequests, visible]);
+  }, [pathname, visible]);
 
   if (!visible) {
     return null;

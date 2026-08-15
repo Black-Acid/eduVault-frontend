@@ -1,12 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-
-// ── Types ────────────────────────────────────────────────
-export type DayActivity = {
-  date: string; // yyyy-mm-dd
-  count: number;
-};
+import { DayActivity } from "~/components/dashboard/streak-utils";
 
 type Cell = {
   date: Date;
@@ -15,12 +10,10 @@ type Cell = {
   isFuture: boolean;
 };
 
-// ── Config ───────────────────────────────────────────────
 const WEEKS_TO_SHOW = 52;
 
-// Static, literal class strings so Tailwind's JIT can find them at build time.
 const LEVEL_CLASSES: Record<number, string> = {
-  0: "bg-white/[0.07]",
+  0: "bg-slate-200/55 ring-1 ring-slate-300/70",
   1: "bg-blue-400/25",
   2: "bg-blue-400/50",
   3: "bg-blue-400/75",
@@ -51,7 +44,6 @@ function getLevel(count: number): 0 | 1 | 2 | 3 | 4 {
   return 4;
 }
 
-// Builds a Sun→Sat grid of weeks ending on the most recent Saturday.
 function buildWeeks(
   activity: DayActivity[],
   weeksCount: number,
@@ -59,7 +51,7 @@ function buildWeeks(
 ): Cell[][] {
   const byDate = new Map(activity.map((a) => [a.date, a.count]));
 
-  const dayOfWeek = today.getDay(); // 0 = Sun
+  const dayOfWeek = today.getDay();
   const thisWeekStart = new Date(today);
   thisWeekStart.setDate(today.getDate() - dayOfWeek);
 
@@ -80,13 +72,14 @@ function buildWeeks(
     }
     weeks.push(week);
   }
+
   return weeks;
 }
 
-// Column index -> month label, only where the month changes.
 function getMonthLabels(weeks: Cell[][]) {
   const labels: { col: number; label: string }[] = [];
   let lastMonth = -1;
+
   weeks.forEach((week, col) => {
     const month = week[0].date.getMonth();
     if (month !== lastMonth) {
@@ -94,26 +87,10 @@ function getMonthLabels(weeks: Cell[][]) {
       lastMonth = month;
     }
   });
+
   return labels;
 }
 
-function getCurrentStreak(activity: DayActivity[], today: Date): number {
-  const byDate = new Map(activity.map((a) => [a.date, a.count]));
-  let streak = 0;
-  const cursor = new Date(today);
-  while (true) {
-    const iso = cursor.toISOString().slice(0, 10);
-    if ((byDate.get(iso) ?? 0) > 0) {
-      streak++;
-      cursor.setDate(cursor.getDate() - 1);
-    } else {
-      break;
-    }
-  }
-  return streak;
-}
-
-// ── Component ────────────────────────────────────────────
 type StreakHeatmapProps = {
   activity: DayActivity[];
   today?: Date;
@@ -128,54 +105,24 @@ export function StreakHeatmap({
     [activity, today],
   );
   const monthLabels = useMemo(() => getMonthLabels(weeks), [weeks]);
-  const totalQuestions = useMemo(
-    () => activity.reduce((sum, a) => sum + a.count, 0),
-    [activity],
-  );
-  const currentStreak = useMemo(
-    () => getCurrentStreak(activity, today),
-    [activity, today],
-  );
-  const bestDay = useMemo(
-    () =>
-      activity.reduce((best, a) => (a.count > best.count ? a : best), {
-        date: "",
-        count: 0,
-      }),
-    [activity],
-  );
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-navy continue-card p-6 text-white">
-      {/* Header */}
-      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h3 className="font-mono text-lg font-semibold">Practice streak</h3>
-          <p className="mt-1 text-xs text-slate-400">
-            <span className="font-bold text-white">
-              {totalQuestions.toLocaleString()}
-            </span>{" "}
-            questions over the last {WEEKS_TO_SHOW} weeks
-          </p>
-        </div>
-
-        <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
-          <span>Less</span>
-          {[0, 1, 2, 3, 4].map((lvl) => (
-            <span
-              key={lvl}
-              className={`h-2.5 w-2.5 rounded-sm ${LEVEL_CLASSES[lvl]}`}
-            />
-          ))}
-          <span>More</span>
-        </div>
+    <div className="relative overflow-hidden rounded-2xl border border-blue-500/25 bg-white/70 p-4 text-slate-900 shadow-lg shadow-slate-950/10 ring-1 ring-blue-500/10 backdrop-blur-2xl">
+      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-white/35 ring-1 ring-white/30" />
+      <div className="flex items-center justify-end gap-1.5 text-[10px] text-slate-500">
+        <span>Less</span>
+        {[0, 1, 2, 3, 4].map((lvl) => (
+          <span
+            key={lvl}
+            className={`h-2.5 w-2.5 rounded-sm ${LEVEL_CLASSES[lvl]}`}
+          />
+        ))}
+        <span>More</span>
       </div>
 
-      {/* Grid */}
-      <div className="overflow-x-auto">
-        <div className="flex gap-3">
-          {/* Day-of-week labels */}
-          <div className="grid shrink-0 grid-rows-7 gap-0.75 pt-4.5">
+      <div className="mt-3 w-full">
+        <div className="flex w-full gap-2.5">
+          <div className="grid shrink-0 grid-rows-7 gap-0.5 pt-4">
             {DAY_LABELS.map((label, i) => (
               <span key={i} className="h-3 text-[9px] leading-3 text-slate-500">
                 {label}
@@ -183,19 +130,18 @@ export function StreakHeatmap({
             ))}
           </div>
 
-          {/* Months + cells */}
-          <div className="flex flex-col gap-1.5">
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
             <div
-              className="grid h-3"
+              className="grid h-3 w-full"
               style={{
-                gridTemplateColumns: `repeat(${weeks.length}, 14px)`,
-                columnGap: 3,
+                gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))`,
+                columnGap: 2,
               }}
             >
               {weeks.map((_, col) => {
                 const match = monthLabels.find((m) => m.col === col);
                 return (
-                  <span key={col} className="text-[9.5px] text-slate-400">
+                  <span key={col} className="text-[9px] text-slate-900">
                     {match?.label ?? ""}
                   </span>
                 );
@@ -203,8 +149,8 @@ export function StreakHeatmap({
             </div>
 
             <div
-              className="grid grid-flow-col grid-rows-7 gap-0.75"
-              style={{ gridAutoColumns: "14px" }}
+              className="grid w-full grid-flow-col grid-rows-7 gap-0.5"
+              style={{ gridAutoColumns: "minmax(0, 1fr)" }}
             >
               {weeks.map((week, wi) =>
                 week.map((cell, di) => (
@@ -218,10 +164,8 @@ export function StreakHeatmap({
                             { day: "numeric", month: "short", year: "numeric" },
                           )}`
                     }
-                    className={`h-3 w-3 rounded-[3px] ${
-                      cell.isFuture
-                        ? "bg-transparent"
-                        : LEVEL_CLASSES[cell.level]
+                    className={`aspect-square w-full rounded-[3px] ${
+                      cell.isFuture ? "bg-transparent" : LEVEL_CLASSES[cell.level]
                     }`}
                   />
                 )),
@@ -229,20 +173,6 @@ export function StreakHeatmap({
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Footer stats */}
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4 text-xs">
-        <span className="text-blue-400">🔥 {currentStreak}-day streak</span>
-        {bestDay.date && (
-          <span className="text-slate-400">
-            Best day: {bestDay.count} questions,{" "}
-            {new Date(bestDay.date).toLocaleDateString("en-GB", {
-              day: "numeric",
-              month: "short",
-            })}
-          </span>
-        )}
       </div>
     </div>
   );

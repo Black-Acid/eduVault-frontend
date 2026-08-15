@@ -29,6 +29,10 @@ const data = [
     title: "Chat AI",
     url: "/student/chat-ai",
   },
+  {
+    title: "Available Tutors",
+    url: "/student/available-tutors",
+  },
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {

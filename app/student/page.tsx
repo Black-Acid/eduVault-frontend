@@ -11,7 +11,11 @@ import {
   Pen02Icon,
 } from "@hugeicons/core-free-icons";
 import Link from "next/link";
-import { DayActivity, StreakHeatmap } from "~/components/dashboard/heat-map";
+import {
+  DayActivity,
+  StreakHeatmap,
+} from "~/components/dashboard/heat-map";
+import { getCurrentStreak } from "~/components/dashboard/streak-utils";
 
 const mockActivity: DayActivity[] = Array.from({ length: 365 }).map((_, i) => {
   const d = new Date();
@@ -41,16 +45,24 @@ const Student_Dashboard = async () => {
   };
 
   const greeting = getGreeting(d.getHours());
+  const currentStreak = getCurrentStreak(mockActivity, d);
 
   return (
     <>
       <section className="flex flex-col gap-y-8">
         {/* Greetings */}
-        <div className="flex flex-col gap-y-4">
-          <p className=" text-xs text-blue-600 uppercase">{formatted}</p>
-          <h1 className="font-mono text-3xl font-semibold text-ink">
-            {greeting}, {username.name}.
-          </h1>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="flex flex-col gap-y-4">
+            <p className=" text-xs text-blue-600 uppercase">{formatted}</p>
+            <h1 className="font-mono text-3xl font-semibold text-ink">
+              {greeting}, {username.name}.
+            </h1>
+          </div>
+
+          <div className="flex items-center gap-2 rounded-full border border-white/10 bg-primary-foreground px-4 py-2 text-sm font-medium text-primary shadow-sm">
+            <HugeiconsIcon icon={Fire02Icon} size={16} className="text-blue-600" />
+            <span>{currentStreak}-day streak</span>
+          </div>
         </div>
 
         {/* Last Unfinished Quiz */}
