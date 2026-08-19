@@ -1,159 +1,139 @@
 "use client";
+import TextareaAutosize from "react-textarea-autosize";
+import { Button } from "../ui/button";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowUp02Icon } from "@hugeicons/core-free-icons";
+import { Message, MessageAvatar, MessageContent } from "../ui/message";
 
-import ReactMarkdown from "react-markdown";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Bubble, BubbleContent } from "../ui/bubble";
 
-import { useState, useEffect } from "react";
-import { Button } from "~/components/ui/button";
-import { chat_ai } from "~/lib/requests";
-
-type ai_response_type = {
-  explanation: string;
-};
-
-type WrongQuestion = {
-  question_id: number;
-  attempt_id: number;
-  is_solved: boolean;
-};
-
-type QuizResults = WrongQuestion[];
-
-export default function ChatAiClient({
-  initialResults,
-}: {
-  initialResults: QuizResults;
-}) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [aiResponse, setAiResponse] = useState<ai_response_type | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [resultsData, setResultsData] = useState<QuizResults | null>(
-    initialResults,
-  );
-
-  console.log(initialResults);
-
-  const wrongQuestions = resultsData || [];
-  const currentWrong = wrongQuestions[currentIndex];
-
-  // Fetch AI explanation for the current question
-  useEffect(() => {
-    async function fetchAiExplanation() {
-      if (!currentWrong || resultsData === undefined) return;
-
-      setLoading(true);
-      const res = await chat_ai({
-        attempt_id: currentWrong.attempt_id,
-        question_id: currentWrong.question_id,
-      });
-      setAiResponse(res);
-      setLoading(false);
-    }
-
-    if (wrongQuestions.length > 0 && !isCompleted) {
-      fetchAiExplanation();
-    }
-  }, [
-    currentIndex,
-    resultsData,
-    currentWrong,
-    isCompleted,
-    wrongQuestions.length,
-  ]);
-
-  const handleNextQuestion = () => {
-    if (!resultsData) return;
-
-    // 1. Mark the current question as solved in local state copy
-    const updatedWrongQuestions = [...resultsData];
-    if (updatedWrongQuestions[currentIndex]) {
-      updatedWrongQuestions[currentIndex].is_solved = true;
-    }
-
-    setResultsData(updatedWrongQuestions);
-
-    // 2. Update the cookie with the new solved status (expires in 2 hours)
-    const d = new Date();
-    d.setTime(d.getTime() + 2 * 60 * 60 * 1000);
-    document.cookie = `quiz_results=${JSON.stringify(updatedWrongQuestions)}; expires=${d.toUTCString()}; path=/; SameSite=Lax`;
-
-    // 3. Move to next or complete
-    if (currentIndex < wrongQuestions.length - 1) {
-      setCurrentIndex((prev) => prev + 1);
-    } else {
-      // Clear cookie when all wrong answers are completed
-      document.cookie =
-        "quiz_results=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      setIsCompleted(true);
-    }
-  };
-
-  if (!resultsData || wrongQuestions.length === 0 || isCompleted) {
-    return (
-      <section className="flex flex-col gap-y-4 border rounded-lg items-center justify-center p-20 min-h-[50vh] text-center">
-        <p className="text-blue-600 text-xl font-semibold">
-          It was nice reviewing your wrong answers together.
-        </p>
-        <p className="text-primary/70 text-sm">
-          All flagged questions have been cleared.
-        </p>
-      </section>
-    );
-  }
-
+const ChatAiClient = () => {
   return (
-    <section className="flex flex-col max-w-2xl mx-auto border rounded-xl p-8 gap-y-6 bg-white shadow-sm my-10">
-      <div className="flex justify-between items-center border-b pb-4">
-        <h2 className="text-xl font-bold text-blue-600">AI Review Session</h2>
-        <span className="text-sm font-medium text-primary/60">
-          Question {currentIndex + 1} of {wrongQuestions.length}
-        </span>
-      </div>
+    <div className="flex flex-col relative mx-auto max-w-3xl">
+      <section className="min-h-[calc(100vh-200px)] flex flex-col gap-y-8">
+        <div className="bg-primary-foreground p-4 flex flex-col gap-y-4 rounded-lg border shadow">
+          <div className="flex justify-between items-center pb-4 border-b">
+            <h2 className="font-semibold text-2xl font-mono text-blue-600">
+              AI Review Session
+            </h2>
+            <p className="text-sm font-medium text-primary/80">
+              Quesion 1 of 40
+            </p>
+          </div>
+          <div className="flex flex-col gap-y-2">
+            <p className="text-blue-600/70 font-semibold uppercase">
+              Question: 1
+            </p>
+            <p className="font-semibold text-xl">
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+              Consectetur beatae consequuntur praesentium necessitatibus
+              voluptatem vel quidem nihil iste exercitationem? Ipsum quaerat
+              iure commodi doloribus assumenda odio quam, amet culpa. Cum?
+            </p>
+          </div>
+        </div>
 
-      {/* Demo Question Container */}
-      <div className="bg-primary-foreground p-5 rounded-lg border border-primary/10 flex flex-col gap-y-2">
-        <span className="text-xs font-semibold tracking-wider text-blue-600 uppercase">
-          Demo Question ID: {currentWrong.question_id}
-        </span>
-        <p className="text-lg font-medium text-primary">
-          [Demo Question]: Why is this concept structured this way based on your
-          previous exam choices?
-        </p>
-      </div>
+        <Message>
+          <MessageContent>
+            <Bubble variant={"ghost"}>
+              <BubbleContent className="text-base flex flex-col gap-y-2">
+                <span className="uppercase text-blue-600">AI Explanation</span>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Deleniti modi a ipsa odio dolorem sed possimus ab dicta.
+                  Minima, veritatis deserunt? Id voluptatibus eveniet, assumenda
+                  rem nemo eligendi itaque amet modi obcaecati animi fugiat
+                  consectetur consequuntur nisi quasi impedit laboriosam
+                  provident ad, iure aliquam eius. Blanditiis laborum vero,
+                  asperiores, aliquid dolorem impedit voluptates, officia alias
+                  fugiat ipsum quidem iste odio sunt maxime sequi deserunt ipsa
+                  quos quasi delectus iusto soluta autem. Sapiente dolores id
+                  tempora iusto a? Necessitatibus veritatis adipisci, iusto sunt
+                  architecto unde incidunt reprehenderit qui blanditiis,
+                  aspernatur, saepe voluptatibus esse perspiciatis. Quidem, quis
+                  deserunt! Nihil atque cum impedit sapiente nesciunt quis
+                  repudiandae dolor dignissimos fuga eos a quas illum suscipit
+                  quos aut, quo animi laudantium amet fugit iste ut voluptate?
+                  Beatae quia, molestiae cum et sint perspiciatis quos.
+                </p>
+              </BubbleContent>
+            </Bubble>
+          </MessageContent>
+        </Message>
+        <Message align="end">
+          <MessageAvatar>
+            <Avatar>
+              <AvatarImage src={"/avatar.png"} />
+              <AvatarFallback>ME</AvatarFallback>
+            </Avatar>
+          </MessageAvatar>
+          <MessageContent>
+            <Bubble>
+              <BubbleContent className="text-base flex flex-col gap-y-2">
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                  Facere illum vitae autem suscipit eveniet assumenda explicabo
+                  dolor laudantium mollitia sequi?
+                </p>
+              </BubbleContent>
+            </Bubble>
+          </MessageContent>
+        </Message>
+        <Message>
+          <MessageContent>
+            <Bubble variant={"ghost"}>
+              <BubbleContent className="text-base flex flex-col gap-y-2">
+                <span className="uppercase text-blue-600">AI Explanation</span>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Deleniti modi a ipsa odio dolorem sed possimus ab dicta.
+                  Minima, veritatis deserunt? Id voluptatibus eveniet, assumenda
+                  rem nemo eligendi itaque amet modi obcaecati animi fugiat
+                  consectetur consequuntur nisi quasi impedit laboriosam
+                  provident ad, iure aliquam eius. Blanditiis laborum vero,
+                  asperiores, aliquid dolorem impedit voluptates, officia alias
+                  fugiat ipsum quidem iste odio sunt maxime sequi deserunt ipsa
+                  quos quasi delectus iusto soluta autem. Sapiente dolores id
+                  tempora iusto a? Necessitatibus veritatis adipisci, iusto sunt
+                  architecto unde incidunt reprehenderit qui blanditiis,
+                  aspernatur, saepe voluptatibus esse perspiciatis. Quidem, quis
+                  deserunt! Nihil atque cum impedit sapiente nesciunt quis
+                  repudiandae dolor dignissimos fuga eos a quas illum suscipit
+                  quos aut, quo animi laudantium amet fugit iste ut voluptate?
+                  Beatae quia, molestiae cum et sint perspiciatis quos.
+                </p>
+              </BubbleContent>
+            </Bubble>
+          </MessageContent>
+        </Message>
+        <div className="flex justify-end pt-8 border-t">
+          <Button>Next Question</Button>
+        </div>
+      </section>
 
-      {/* AI Explanation Result */}
-      <div className="bg-primary-foreground p-5 rounded-lg border border-blue-600/20 flex flex-col gap-y-2 min-h-30">
-        <span className="text-xs font-semibold tracking-wider text-blue-600 uppercase">
-          AI Explanation
-        </span>
-        {loading ? (
-          <p className="text-primary/60 italic animate-pulse">
-            Analyzing question details...
-          </p>
-        ) : (
-          <ReactMarkdown
-            remarkPlugins={[remarkMath]}
-            rehypePlugins={[rehypeKatex]}
-          >
-            {aiResponse?.explanation ||
-              "Here is the breakdown of why the selected option differed from the core requirements of this paper."}
-          </ReactMarkdown>
-        )}
-      </div>
+      <section className="bottom-0 sticky w-full h-fit -mb-4 flex flex-col items-center gap-y-4 bg-white rounded-lg px-4 py-2">
+        <div className="flex gap-x-4 w-full items-center rounded-lg bg-primary-foreground px-4 py-2 shadow border">
+          <div className="w-full  flex items-center">
+            <TextareaAutosize
+              maxRows={5}
+              className="w-full bg-none border-0 outline-0 no-scrollbar resize-none"
+              placeholder="Ask me anything..."
+            />
+          </div>
+          <Button className={"px-2"}>
+            <HugeiconsIcon
+              icon={ArrowUp02Icon}
+              strokeWidth={2}
+              className="text-4xl"
+            />
+          </Button>
+        </div>
 
-      <div className="flex justify-end pt-2">
-        <Button
-          onClick={handleNextQuestion}
-          disabled={loading}
-          className="font-medium"
-        >
-          {currentIndex === wrongQuestions.length - 1
-            ? "Finish Review"
-            : "Next Question"}
-        </Button>
-      </div>
-    </section>
+        <p className="text-xs">Disclaimer: AI can make mistakes</p>
+      </section>
+    </div>
   );
-}
+};
+
+export default ChatAiClient;

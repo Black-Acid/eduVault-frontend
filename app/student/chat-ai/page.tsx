@@ -8,17 +8,17 @@ const Chat_Ai = async () => {
 
   console.log(quiz_results);
 
-  if (!quiz_results) {
-    return (
-      <section className="flex border rounded-lg items-center justify-center p-20 min-h-[50vh]">
-        <p className="text-center text-blue-600/70 text-xl font-medium">
-          Please attempt a quiz before you can review with AI.
-        </p>
-      </section>
-    );
-  }
+  // if (!quiz_results) {
+  //   return (
+  //     <section className="flex border rounded-lg items-center justify-center p-20 min-h-[50vh]">
+  //       <p className="text-center text-blue-600/70 text-xl font-medium">
+  //         Please attempt a quiz before you can review with AI.
+  //       </p>
+  //     </section>
+  //   );
+  // }
 
-  return <ChatAiClient initialResults={quiz_results} />;
+  return <ChatAiClient />;
   // return <div>Hello World for the next three hours</div>;
 };
 
