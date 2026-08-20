@@ -1,5 +1,4 @@
 import { cookies } from "next/headers";
-import { Button } from "~/components/ui/button";
 
 import { Progress as ProgressPrimitive } from "@base-ui/react/progress";
 import { ProgressTrack, ProgressIndicator } from "~/components/ui/progress";
@@ -58,7 +57,11 @@ const Student_Dashboard = async () => {
           </div>
 
           <div className="flex items-center gap-2 rounded-full border border-white/10 bg-primary-foreground px-4 py-2 text-sm font-medium text-primary shadow-sm">
-            <HugeiconsIcon icon={Fire02Icon} size={16} className="text-blue-600" />
+            <HugeiconsIcon
+              icon={Fire02Icon}
+              size={16}
+              className="text-blue-600"
+            />
             <span>{currentStreak}-day streak</span>
           </div>
         </div>

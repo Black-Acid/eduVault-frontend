@@ -1,10 +1,5 @@
 import { AppSidebar } from "~/components/student/sidebar";
-import { Separator } from "~/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "~/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 
 export default function Student_Layout({ children }: LayoutProps<"/">) {
   return (
