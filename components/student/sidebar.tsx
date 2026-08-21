@@ -33,6 +33,10 @@ const data = [
     title: "Available Tutors",
     url: "/student/available-tutors",
   },
+  {
+    title: "Chat Tutors",
+    url: "/student/chat-teacher",
+  },
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {

@@ -18,7 +18,7 @@ export default function Student_Layout({ children }: LayoutProps<"/">) {
             </header>
           </div> */}
 
-          <main className="p-4 z-10 w-full">{children}</main>
+          <main className="p-2 z-10 w-full min-h-dvh">{children}</main>
         </SidebarInset>
       </SidebarProvider>
       {/* <Navbar /> */}

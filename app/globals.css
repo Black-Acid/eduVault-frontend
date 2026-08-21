@@ -197,3 +197,20 @@
     transparent 14px
   );
 }
+
+/* width */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  padding: 0 4px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background-color: #155dfc;
+  border-radius: 999px;
+}
