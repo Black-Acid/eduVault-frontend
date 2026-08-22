@@ -52,7 +52,7 @@ const Student_Dashboard = async () => {
           <div className="flex flex-col gap-y-4">
             <p className=" text-xs text-blue-600 uppercase">{formatted}</p>
             <h1 className="font-mono text-3xl font-semibold text-ink">
-              {greeting}, {username.name}.
+              {/* {greeting}, {username.name}. */} Hello, World
             </h1>
           </div>
 
