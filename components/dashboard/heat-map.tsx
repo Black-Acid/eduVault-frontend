@@ -1,26 +1,16 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { DayActivity } from "~/components/dashboard/streak-utils";
 
-type Cell = {
+type DayCell = {
   date: Date;
   count: number;
   level: 0 | 1 | 2 | 3 | 4;
+  isCurrentMonth: boolean;
   isFuture: boolean;
 };
 
-const WEEKS_TO_SHOW = 52;
-
-const LEVEL_CLASSES: Record<number, string> = {
-  0: "bg-slate-200/55 ring-1 ring-slate-300/70",
-  1: "bg-blue-400/25",
-  2: "bg-blue-400/50",
-  3: "bg-blue-400/75",
-  4: "bg-blue-400",
-};
-
-const DAY_LABELS = ["", "Mon", "", "Wed", "", "Fri", ""];
 const MONTH_NAMES = [
   "Jan",
   "Feb",
@@ -36,59 +26,95 @@ const MONTH_NAMES = [
   "Dec",
 ];
 
+const WEEKDAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"];
+
+const LEVEL_CLASSES: Record<0 | 1 | 2 | 3 | 4, string> = {
+  0: "bg-slate-200/45",
+  1: "bg-blue-400/20",
+  2: "bg-blue-400/40",
+  3: "bg-blue-500/65",
+  4: "bg-blue-600",
+};
+
 function getLevel(count: number): 0 | 1 | 2 | 3 | 4 {
   if (count <= 0) return 0;
-  if (count <= 4) return 1;
-  if (count <= 9) return 2;
-  if (count <= 15) return 3;
+  if (count <= 2) return 1;
+  if (count <= 5) return 2;
+  if (count <= 9) return 3;
   return 4;
 }
 
-function buildWeeks(
+function buildMonthGrid(
   activity: DayActivity[],
-  weeksCount: number,
+  monthDate: Date,
   today: Date,
-): Cell[][] {
-  const byDate = new Map(activity.map((a) => [a.date, a.count]));
+): DayCell[][] {
+  const byDate = new Map(activity.map((item) => [item.date, item.count]));
+  const firstDay = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+  const daysInMonth = new Date(
+    monthDate.getFullYear(),
+    monthDate.getMonth() + 1,
+    0,
+  ).getDate();
 
-  const dayOfWeek = today.getDay();
-  const thisWeekStart = new Date(today);
-  thisWeekStart.setDate(today.getDate() - dayOfWeek);
+  const weeks: DayCell[][] = [];
+  let week: DayCell[] = [];
 
-  const firstWeekStart = new Date(thisWeekStart);
-  firstWeekStart.setDate(thisWeekStart.getDate() - (weeksCount - 1) * 7);
+  for (let i = 0; i < firstDay.getDay(); i++) {
+    week.push({
+      date: new Date(monthDate.getFullYear(), monthDate.getMonth(), 1),
+      count: 0,
+      level: 0,
+      isCurrentMonth: false,
+      isFuture: false,
+    });
+  }
 
-  const weeks: Cell[][] = [];
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(monthDate.getFullYear(), monthDate.getMonth(), day);
+    const iso = date.toISOString().slice(0, 10);
+    const count = byDate.get(iso) ?? 0;
 
-  for (let w = 0; w < weeksCount; w++) {
-    const week: Cell[] = [];
-    for (let d = 0; d < 7; d++) {
-      const date = new Date(firstWeekStart);
-      date.setDate(firstWeekStart.getDate() + w * 7 + d);
-      const iso = date.toISOString().slice(0, 10);
-      const isFuture = date > today;
-      const count = byDate.get(iso) ?? 0;
-      week.push({ date, count, level: getLevel(count), isFuture });
+    week.push({
+      date,
+      count,
+      level: getLevel(count),
+      isCurrentMonth: true,
+      isFuture: date > today,
+    });
+
+    if (week.length === 7) {
+      weeks.push(week);
+      week = [];
+    }
+  }
+
+  if (week.length > 0) {
+    while (week.length < 7) {
+      week.push({
+        date: new Date(monthDate.getFullYear(), monthDate.getMonth(), 1),
+        count: 0,
+        level: 0,
+        isCurrentMonth: false,
+        isFuture: false,
+      });
     }
     weeks.push(week);
   }
 
-  return weeks;
-}
+  while (weeks.length < 5) {
+    weeks.push(
+      Array.from({ length: 7 }, () => ({
+        date: new Date(monthDate.getFullYear(), monthDate.getMonth(), 1),
+        count: 0,
+        level: 0,
+        isCurrentMonth: false,
+        isFuture: false,
+      })),
+    );
+  }
 
-function getMonthLabels(weeks: Cell[][]) {
-  const labels: { col: number; label: string }[] = [];
-  let lastMonth = -1;
-
-  weeks.forEach((week, col) => {
-    const month = week[0].date.getMonth();
-    if (month !== lastMonth) {
-      labels.push({ col, label: MONTH_NAMES[month] });
-      lastMonth = month;
-    }
-  });
-
-  return labels;
+  return weeks.slice(0, 6);
 }
 
 type StreakHeatmapProps = {
@@ -100,79 +126,97 @@ export function StreakHeatmap({
   activity,
   today = new Date(),
 }: StreakHeatmapProps) {
-  const weeks = useMemo(
-    () => buildWeeks(activity, WEEKS_TO_SHOW, today),
-    [activity, today],
+  const [activeMonth, setActiveMonth] = useState(
+    new Date(today.getFullYear(), today.getMonth(), 1),
   );
-  const monthLabels = useMemo(() => getMonthLabels(weeks), [weeks]);
+
+  const monthGrid = useMemo(
+    () => buildMonthGrid(activity, activeMonth, today),
+    [activity, activeMonth, today],
+  );
+
+  const monthLabel = `${MONTH_NAMES[activeMonth.getMonth()]} ${activeMonth.getFullYear()}`;
+
+  const canGoNext =
+    activeMonth.getFullYear() < today.getFullYear() ||
+    (activeMonth.getFullYear() === today.getFullYear() &&
+      activeMonth.getMonth() < today.getMonth());
+
+  const canGoPrev = activeMonth.getFullYear() > today.getFullYear() - 1;
+
+  const shiftMonth = (offset: number) => {
+    setActiveMonth((current) => {
+      const next = new Date(current);
+      next.setMonth(next.getMonth() + offset);
+      next.setDate(1);
+      return next;
+    });
+  };
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-blue-500/25 bg-white/70 p-4 text-slate-900 shadow-lg shadow-slate-950/10 ring-1 ring-blue-500/10 backdrop-blur-2xl">
-      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-white/35 ring-1 ring-white/30" />
-      <div className="flex items-center justify-end gap-1.5 text-[10px] text-slate-500">
-        <span>Less</span>
-        {[0, 1, 2, 3, 4].map((lvl) => (
-          <span
-            key={lvl}
-            className={`h-2.5 w-2.5 rounded-sm ${LEVEL_CLASSES[lvl]}`}
-          />
-        ))}
-        <span>More</span>
+    <div className="relative overflow-hidden rounded-2xl border border-blue-500/20 bg-white/80 p-3 shadow-lg shadow-slate-950/10 ring-1 ring-blue-500/10 backdrop-blur-2xl">
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => shiftMonth(-1)}
+            disabled={!canGoPrev}
+            className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            Prev
+          </button>
+          <span className="text-sm font-semibold text-slate-900">
+            {monthLabel}
+          </span>
+          <button
+            type="button"
+            onClick={() => shiftMonth(1)}
+            disabled={!canGoNext}
+            className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            Next
+          </button>
+        </div>
+        <span className="text-[10px] text-slate-500">Activity calendar</span>
       </div>
 
-      <div className="mt-3 w-full">
-        <div className="flex w-full gap-2.5">
-          <div className="grid shrink-0 grid-rows-7 gap-0.5 pt-4">
-            {DAY_LABELS.map((label, i) => (
-              <span key={i} className="h-3 text-[9px] leading-3 text-slate-500">
-                {label}
-              </span>
-            ))}
-          </div>
+      <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-medium uppercase tracking-[0.12em] text-slate-500">
+        {WEEKDAY_LABELS.map((label, index) => (
+          <span key={`${label}-${index}`}>{label}</span>
+        ))}
+      </div>
 
-          <div className="flex min-w-0 flex-1 flex-col gap-1">
-            <div
-              className="grid h-3 w-full"
-              style={{
-                gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))`,
-                columnGap: 2,
-              }}
-            >
-              {weeks.map((_, col) => {
-                const match = monthLabels.find((m) => m.col === col);
-                return (
-                  <span key={col} className="text-[9px] text-slate-900">
-                    {match?.label ?? ""}
-                  </span>
-                );
-              })}
-            </div>
+      <div className="mt-2 grid grid-rows-6 gap-1" style={{ gridTemplateColumns: "repeat(7, minmax(0, 1fr))" }}>
+        {monthGrid.flatMap((week, weekIndex) =>
+          week.map((cell, dayIndex) => {
+            if (!cell.isCurrentMonth) {
+              return (
+                <div
+                  key={`${weekIndex}-${dayIndex}`}
+                  className="aspect-square rounded-[6px] bg-transparent"
+                />
+              );
+            }
 
-            <div
-              className="grid w-full grid-flow-col grid-rows-7 gap-0.5"
-              style={{ gridAutoColumns: "minmax(0, 1fr)" }}
-            >
-              {weeks.map((week, wi) =>
-                week.map((cell, di) => (
-                  <div
-                    key={`${wi}-${di}`}
-                    title={
-                      cell.isFuture
-                        ? undefined
-                        : `${cell.count} question${cell.count === 1 ? "" : "s"} · ${cell.date.toLocaleDateString(
-                            "en-GB",
-                            { day: "numeric", month: "short", year: "numeric" },
-                          )}`
-                    }
-                    className={`aspect-square w-full rounded-[3px] ${
-                      cell.isFuture ? "bg-transparent" : LEVEL_CLASSES[cell.level]
-                    }`}
-                  />
-                )),
-              )}
-            </div>
-          </div>
-        </div>
+            return (
+              <div
+                key={`${weekIndex}-${dayIndex}`}
+                title={`${cell.date.toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })} · ${cell.count} activity${cell.count === 1 ? "" : "ies"}`}
+                className={`aspect-square rounded-[6px] border border-white/60 p-1 text-[10px] leading-none text-slate-900 ${
+                  cell.isFuture ? "bg-slate-100/50" : LEVEL_CLASSES[cell.level]
+                }`}
+              >
+                <span className="block text-[9px] font-semibold text-slate-800/90">
+                  {cell.date.getDate()}
+                </span>
+              </div>
+            );
+          }),
+        )}
       </div>
     </div>
   );
