@@ -36,10 +36,10 @@ type MasterySubject = {
 
 const masterySubjects: MasterySubject[] = [
   {
-    name: "Mathematics",
+    name: "Further Mathematics",
     score: 82,
-    year: 2024,
-    paper: "Paper 2",
+    year: 2022,
+    paper: "Paper 1",
     topics: [
       { name: "Algebra", score: 91 },
       { name: "Geometry", score: 76 },
@@ -60,10 +60,10 @@ const masterySubjects: MasterySubject[] = [
     ],
   },
   {
-    name: "English Language",
+    name: "Social Studies",
     score: 68,
     year: 2023,
-    paper: "Paper 3",
+    paper: "Paper 1",
     topics: [
       { name: "Comprehension", score: 79 },
       { name: "Summary Writing", score: 71 },
@@ -74,8 +74,8 @@ const masterySubjects: MasterySubject[] = [
   {
     name: "Chemistry",
     score: 61,
-    year: 2024,
-    paper: "Paper 2",
+    year: 2023,
+    paper: "Paper 1",
     topics: [
       { name: "Organic Chemistry", score: 42 },
       { name: "Stoichiometry", score: 55 },
@@ -133,7 +133,9 @@ function StatCard({
           {value}
         </span>
         {subtitle ? (
-          <span className={subtitleClassName ?? "text-xs leading-5 text-primary/65"}>
+          <span
+            className={subtitleClassName ?? "text-xs leading-5 text-primary/65"}
+          >
             {subtitle}
           </span>
         ) : null}
@@ -145,7 +147,7 @@ function StatCard({
 const Student_Dashboard = async () => {
   const cookieStore = await cookies();
   const dataCookie = cookieStore.get("data")?.value;
-  const username = dataCookie ? JSON.parse(dataCookie) : null;
+  const user = dataCookie ? JSON.parse(dataCookie) : null;
 
   const d = new Date();
   const formatted = d.toLocaleDateString("en-US", {
@@ -167,7 +169,7 @@ const Student_Dashboard = async () => {
     <>
       <section className="flex flex-col gap-y-8">
         {/* Greetings */}
-        <div className="overflow-hidden rounded-3xl border border-line bg-gradient-to-br from-primary-foreground via-primary-foreground to-paper px-5 py-4 shadow-sm shadow-black/5 md:px-6 md:py-5">
+        <div className="overflow-hidden rounded-3xl border border-line bg-linear-to-br from-primary-foreground via-primary-foreground to-paper px-5 py-4 shadow-sm shadow-black/5 md:px-6 md:py-5">
           <div className="grid gap-3 lg:grid-cols-[1.5fr_0.9fr] lg:items-end">
             <div className="flex flex-col gap-y-2.5">
               <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.18em] text-blue-600">
@@ -176,7 +178,7 @@ const Student_Dashboard = async () => {
                 <span>{greeting}</span>
               </div>
               <h1 className="font-mono text-3xl font-semibold text-ink md:text-4xl">
-                Welcome Prince
+                Welcome {user?.name.split(" ")[0] ?? "Student"}!
               </h1>
               <p className="max-w-2xl text-sm leading-5 text-primary/70">
                 Track progress, accuracy, and tutor feedback at a glance.
@@ -184,7 +186,7 @@ const Student_Dashboard = async () => {
             </div>
 
             <div className="flex justify-start lg:justify-end">
-              <div className="flex w-full max-w-[220px] items-center gap-2 rounded-2xl border border-line bg-white/80 px-3 py-2 shadow-sm backdrop-blur">
+              <div className="flex w-full max-w-55 items-center gap-2 rounded-2xl border border-line bg-white/80 px-3 py-2 shadow-sm backdrop-blur">
                 <div className="rounded-xl bg-blue-600/10 p-1.5 text-blue-600">
                   <HugeiconsIcon
                     icon={Fire02Icon}
@@ -204,11 +206,6 @@ const Student_Dashboard = async () => {
             </div>
           </div>
         </div>
-
-        {/* Last Unfinished Quiz */}
-        {/* <div className="p-6 bg-navy rounded-lg continue-card text-white flex flex-col lg:flex-row gap-8 lg:justify-between lg:items-center">
-          
-        </div> */}
 
         {/* Stats Cards */}
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -393,7 +390,8 @@ const Student_Dashboard = async () => {
                   WASSCE Readiness
                 </h4>
                 <p className="text-sm text-primary/70">
-                  Overall readiness: <span className="font-semibold text-ink">68%</span>
+                  Overall readiness:{" "}
+                  <span className="font-semibold text-ink">68%</span>
                 </p>
               </div>
 
@@ -419,9 +417,20 @@ const Student_Dashboard = async () => {
               </div>
 
               <div className="rounded-2xl border border-line bg-white p-4 text-sm text-primary/80">
-                <p className="font-semibold text-ink">Estimated readiness: <span className="font-normal text-primary/80">Moderate</span></p>
-                <p className="mt-3 font-semibold text-ink">Strongest: <span className="font-normal text-primary/80">Mathematics</span></p>
-                <p className="mt-3 font-semibold text-ink">Needs attention: <span className="font-normal text-primary/80">Chemistry</span></p>
+                <p className="font-semibold text-ink">
+                  Estimated readiness:{" "}
+                  <span className="font-normal text-primary/80">Moderate</span>
+                </p>
+                <p className="mt-3 font-semibold text-ink">
+                  Strongest:{" "}
+                  <span className="font-normal text-primary/80">
+                    Mathematics
+                  </span>
+                </p>
+                <p className="mt-3 font-semibold text-ink">
+                  Needs attention:{" "}
+                  <span className="font-normal text-primary/80">Chemistry</span>
+                </p>
               </div>
             </div>
             {/* Areas to improve */}
@@ -472,7 +481,9 @@ const Student_Dashboard = async () => {
                     Warm up
                   </span>
                 </div>
-                <p className="text-xs text-primary/70">12 questions available</p>
+                <p className="text-xs text-primary/70">
+                  12 questions available
+                </p>
               </div>
             </div>
 
