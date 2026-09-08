@@ -34,8 +34,8 @@ const data = [
     url: "/student/available-tutors",
   },
   {
-    title: "Chat Tutors",
-    url: "/student/chat-teacher",
+    title: "All Sessions",
+    url: "/student/sessions",
   },
 ];
 
