@@ -81,12 +81,14 @@ export function TutorCard({ tutor, subjects }: { tutor: Tutor; subjects: Subject
           <dd className="mt-1 font-semibold break-words text-ink">
             {tutor.years_of_experience} year{tutor.years_of_experience === 1 ? "" : "s"}
           </dd>
+          <dd className="text-xs text-ink-soft">teaching experience</dd>
         </div>
         <div className="min-w-0 rounded-xl bg-paper px-3 py-2">
           <dt className="text-[10px] uppercase tracking-[0.15em] text-ink-soft">Session fee</dt>
           <dd className="mt-1 font-semibold break-words text-ink">
             {formatCurrencyGHS(tutor.session_fee)}
           </dd>
+          <dd className="text-xs text-ink-soft">per session</dd>
         </div>
       </dl>
 

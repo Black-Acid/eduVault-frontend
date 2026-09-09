@@ -89,6 +89,14 @@ describe("tutor ratings, fees and experience", () => {
     renderTutor();
     expect(screen.getByText("6 years")).toBeInTheDocument();
   });
+
+  it("labels the experience and fee tiles", () => {
+    // Sublabels carried over from the partner's tutors-page integration.
+    renderTutor();
+
+    expect(screen.getByText("teaching experience")).toBeInTheDocument();
+    expect(screen.getByText("per session")).toBeInTheDocument();
+  });
 });
 
 describe("tutor availability", () => {
