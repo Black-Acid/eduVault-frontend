@@ -10,13 +10,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
   useSidebar,
 } from "~/components/ui/sidebar";
 import Logout_Button from "../general/logout-button";
 
-// This is sample data.
-const data = [
+/** Navigation configuration - static UI config, not domain data. */
+const NAV_ITEMS = [
   {
     title: "Dashboard",
     url: "/student",
@@ -58,7 +57,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </div>
       </SidebarHeader>
       <SidebarContent className="px-2 py-4">
-        {data.map(({ title, url }) => (
+        {NAV_ITEMS.map(({ title, url }) => (
           <SidebarMenu key={title}>
             <SidebarMenuItem>
               <SidebarMenuButton

@@ -608,10 +608,11 @@ function SidebarMenuSkeleton({
 }: React.ComponentProps<"div"> & {
   showIcon?: boolean;
 }) {
-  // Random width between 50 to 90%.
-  const [width] = React.useState(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`;
-  });
+  // Deterministic placeholder width between 50% and 90%, derived from the
+  // element's own id. Random widths differed between the server and client
+  // render, which produced a hydration mismatch.
+  const id = React.useId();
+  const width = `${50 + (Array.from(id).reduce((sum, char) => sum + char.charCodeAt(0), 0) % 41)}%`;
 
   return (
     <div

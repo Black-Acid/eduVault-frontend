@@ -1,107 +1,87 @@
 "use client";
-import { useEffect } from "react";
-import { Button } from "../ui/button";
-import { Results } from "./quiz-client";
 
-interface QuizResultsCardProps {
-  results: Results | null;
+import { Button } from "../ui/button";
+import type { SubmitPaperResponse } from "~/lib/api/schemas";
+import { formatPercent } from "~/lib/format";
+
+type QuizResultsCardProps = {
+  results: SubmitPaperResponse;
+  /** Questions the student left blank. Counted wrong, but not AI-reviewable. */
+  unansweredCount: number;
   onRestart: () => void;
   onDashboard: () => void;
   onAI: () => void;
-}
+};
 
+/**
+ * Result summary, straight from `POST /papers/submit`.
+ *
+ * The AI-review queue used to be written here with `document.cookie`. It is
+ * now built server-side by the submit route from the backend's own
+ * `wrong_questions`, so this component only displays results.
+ */
 export default function Quiz_Results_Card({
   results,
+  unansweredCount,
   onRestart,
   onDashboard,
   onAI,
 }: QuizResultsCardProps) {
-  // useEffect(() => {
-  //   if (results) {
-  //     const wrong_answers = results?.wrong_questions;
-  //     const wrongs = wrong_answers?.map(
-  //       ({ question_id }: { question_id: number }) => ({
-  //         attempt_id: results?.attempt_id,
-  //         question_id,
-  //         is_resolved: false,
-  //       }),
-  //     );
-  //     const d = new Date();
-  //     d.setTime(d.getTime() + 2 * 60 * 60 * 1000);
-  //     const expires = "expires=" + d.toUTCString();
-
-  //     // Store results directly as a JSON string without encoding
-  //     document.cookie = `quiz_results=${JSON.stringify(wrongs)}; ${expires}; path=/; SameSite=Lax`;
-  //   }
-  // }, [results]);
-
-  useEffect(() => {
-    if (results) {
-      const wrong_answers = results?.wrong_questions || [];
-      const wrongs = wrong_answers.map(
-        ({ question_id }: { question_id: number }) => ({
-          attempt_id: results?.attempt_id,
-          question_id,
-          is_resolved: false,
-        }),
-      );
-      const d = new Date();
-      d.setTime(d.getTime() + 2 * 60 * 60 * 1000);
-      const expires = "expires=" + d.toUTCString();
-
-      // Overwrite the existing cookie with new quiz data
-      document.cookie = `quiz_results=${JSON.stringify(wrongs)}; ${expires}; path=/; SameSite=Lax`;
-    }
-  }, [results?.attempt_id]);
+  const reviewableCount = results.wrong_questions.length;
 
   return (
     <div className="flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-8 text-center flex flex-col border gap-y-6">
-        <div className="w-20 h-20 bg-primary-foreground rounded-full flex items-center justify-center mx-auto text-3xl font-bold">
+      <div className="flex w-full max-w-md flex-col gap-y-6 rounded-2xl border bg-white p-8 text-center shadow-xl">
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-primary-foreground text-3xl font-bold">
           🎉
         </div>
-        <h1 className="text-2xl font-bold text-blue-600">Quiz Completed!</h1>
-        <p className="text-primary/70">
-          Great job reviewing your core subject material today.
-        </p>
+        <h1 className="text-2xl font-bold text-blue-600">Quiz submitted</h1>
+        <p className="text-primary/70">Here is how you did on this paper.</p>
 
-        <div className="grid grid-cols-2 gap-4 bg-primary-foreground p-4 rounded-xl border border-primary/20">
-          <p className="text-left text-primary/70">
-            <span>Total Questions: </span>
-            <span className="font-semibold text-blue-600">
-              {results?.total_questions || 0}
-            </span>
+        <dl className="grid grid-cols-2 gap-4 rounded-xl border border-primary/20 bg-primary-foreground p-4 text-left">
+          <div className="text-primary/70">
+            <dt className="inline">Total questions: </dt>
+            <dd className="inline font-semibold text-blue-600">{results.total_questions}</dd>
+          </div>
+          <div className="text-primary/70">
+            <dt className="inline">Correct: </dt>
+            <dd className="inline font-semibold text-blue-600">{results.correct}</dd>
+          </div>
+          <div className="text-primary/70">
+            <dt className="inline">Wrong: </dt>
+            <dd className="inline font-semibold text-blue-600">{results.wrong}</dd>
+          </div>
+          <div className="text-primary/70">
+            <dt className="inline">Score: </dt>
+            <dd className="inline font-semibold text-blue-600">
+              {results.score}/{results.total_questions}
+            </dd>
+          </div>
+          <div className="col-span-full text-primary/70">
+            <dt className="sr-only">Percentage</dt>
+            <dd className="text-4xl font-semibold text-blue-600">
+              {formatPercent(results.percentage, 2)}
+            </dd>
+          </div>
+        </dl>
+
+        {unansweredCount > 0 ? (
+          <p className="text-sm text-primary/70">
+            {unansweredCount} question{unansweredCount === 1 ? " was" : "s were"} left unanswered.
+            EduVault counts {unansweredCount === 1 ? "it" : "them"} as wrong, and the AI review can
+            only explain questions you actually answered.
           </p>
-          <p className="text-left text-primary/70">
-            <span>Correct Answers:</span>
-            <span className="font-semibold text-blue-600">
-              {results?.correct || 0}
-            </span>
-          </p>
-          <p className="text-left text-primary/70">
-            <span>Wrong Answers:</span>
-            <span className="font-semibold text-blue-600">
-              {results?.wrong || 0}
-            </span>
-          </p>
-          <p className="text-left text-primary/70">
-            <span>Score:</span>
-            <span className="font-semibold text-blue-600">
-              {results?.score || 0}/{results?.total_questions || 0}
-            </span>
-          </p>
-          <p className="col-span-full text-primary/70">
-            <span className="font-semibold text-blue-600 text-4xl">
-              {results?.percentage?.toFixed(2) || 0}%
-            </span>
-          </p>
-        </div>
+        ) : null}
 
         <div className="flex flex-col gap-y-3">
-          <Button onClick={onAI}>Review with AI</Button>
-          <Button onClick={onRestart}>Try Again</Button>
+          <Button onClick={onAI} disabled={reviewableCount === 0}>
+            {reviewableCount === 0
+              ? "Nothing to review with AI"
+              : `Review ${reviewableCount} missed question${reviewableCount === 1 ? "" : "s"} with AI`}
+          </Button>
+          <Button onClick={onRestart}>Try again</Button>
           <Button onClick={onDashboard} variant="outline">
-            Back to Dashboard
+            Back to dashboard
           </Button>
         </div>
       </div>

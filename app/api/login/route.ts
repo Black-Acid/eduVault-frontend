@@ -1,52 +1,45 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { z } from "zod";
 
-export async function POST(req: NextRequest) {
+import { login } from "~/lib/api/auth";
+import { ApiError } from "~/lib/api/errors";
+import { errorResponse, parseJsonBody } from "~/lib/api/route-helpers";
+import { homePathForRole } from "~/lib/auth/roles";
+import { sessionFromAuthResponse, setSessionCookie } from "~/lib/auth/session";
+
+const loginBodySchema = z.object({
+  email: z.string().trim().min(1, "Email is required"),
+  password: z.string().min(1, "Password is required"),
+});
+
+/**
+ * Exchanges credentials for an HTTP-only session cookie.
+ *
+ * The access token is deliberately NOT returned in the response body: the
+ * browser receives only where to navigate next.
+ */
+export async function POST(request: Request) {
   try {
-    const { email, password } = await req.json();
+    const body = await parseJsonBody(request, loginBodySchema);
+    const auth = await login({ email: body.email, password: body.password });
+    const session = sessionFromAuthResponse(auth);
 
-    const response = await fetch(
-      "https://eduvault-jadl.onrender.com/auth/login/",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      },
-    );
-
-    // Parse the JSON response from the external API
-    const data = await response.json();
-
-    // Handle non-200 responses from the external API
-    if (!response.ok) {
-      return NextResponse.json(
-        {
-          error:
-            data.message || data.error || data.detail || "Invalid Credentials",
-        },
-        { status: response.status },
+    if (!session) {
+      throw new ApiError(
+        "contract",
+        "The backend returned an account with an unrecognised role or expiry.",
       );
     }
 
-    // Create a NextResponse to set the cookie
-    const res = NextResponse.json(data);
-
-    // Store the entire login data as a JSON string in the cookie
-    res.cookies.set("data", JSON.stringify(data), {
-      maxAge: 60 * 60 * 2,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
+    const response = NextResponse.json({
+      name: session.name,
+      role: session.role,
+      redirectTo: homePathForRole(session.role),
     });
 
-    // Return the successful response
-    return res;
-  } catch {
-    // This only triggers if the 'fetch' fails entirely (network error)
-    return NextResponse.json(
-      { error: "Service unavailable. Please try again later." },
-      { status: 503 },
-    );
+    setSessionCookie(response, session);
+    return response;
+  } catch (error) {
+    return errorResponse(error);
   }
 }

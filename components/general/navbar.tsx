@@ -1,21 +1,22 @@
 import Link from "next/link";
-import { Button } from "../ui/button";
+
+import { buttonVariants } from "../ui/button";
 
 const Navbar = () => {
   return (
-    <header className="p-4 flex justify-between items-center border-b">
-      <div className="flex items-baseline gap-0.5 text-2xl tracking-tighter leading-none font-mono">
+    <header className="flex items-center justify-between border-b p-4">
+      <div className="flex items-baseline gap-0.5 font-mono text-2xl leading-none tracking-tighter">
         <span className="font-black text-blue-600">Edu</span>
         <span className="font-semibold text-primary/70">Vault</span>
       </div>
-      <div className="flex items-center gap-x-4">
-        <Button>
-          <Link href={"/login"}>Login</Link>
-        </Button>
-        <Button variant={"outline"}>
-          <Link href={"/signup"}>Sign Up</Link>
-        </Button>
-      </div>
+      <nav className="flex items-center gap-x-4">
+        <Link href="/login" className={buttonVariants()}>
+          Log in
+        </Link>
+        <Link href="/signup" className={buttonVariants({ variant: "outline" })}>
+          Sign up
+        </Link>
+      </nav>
     </header>
   );
 };

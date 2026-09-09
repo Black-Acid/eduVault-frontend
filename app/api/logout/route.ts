@@ -1,20 +1,10 @@
 import { NextResponse } from "next/server";
 
+import { clearSessionCookies } from "~/lib/auth/session";
+
+/** Clears the session cookie, the legacy `data` cookie and the AI-review queue. */
 export async function POST() {
-  try {
-    // Create a NextResponse to delete the cookie
-    const res = NextResponse.json({ message: "Sign out successful" });
-
-    // Delete the 'data' cookie by setting it with an expired date
-    res.cookies.delete("data");
-
-    // Return the response indicating successful sign-out
-    return res;
-  } catch {
-    // Handle any unexpected errors
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 },
-    );
-  }
+  const response = NextResponse.json({ message: "Signed out" });
+  clearSessionCookies(response);
+  return response;
 }

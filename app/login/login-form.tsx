@@ -1,7 +1,12 @@
 "use client";
-import { Controller, useForm } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { cn } from "~/lib/utils";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import z from "zod/v3";
+
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -13,82 +18,72 @@ import {
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
 } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
-import { FieldError } from "~/components/ui/field";
-// import { Spinner } from "~/components/ui/spinner";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "~/components/ui/toast";
-import z from "zod/v3";
+import { cn } from "~/lib/utils";
 
-// Schema for form validation using Zod
+/** Mirrors what the backend will accept, so obvious mistakes fail locally. */
 const formSchema = z.object({
-  email: z.string().min(1, { message: "Email is required" }),
+  email: z
+    .string()
+    .min(1, { message: "Email is required" })
+    .email({ message: "Enter a valid email address" }),
   password: z.string().min(1, { message: "Password is required" }),
 });
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+type LoginResponse = {
+  redirectTo?: string;
+  error?: string;
+};
+
+/** Only same-origin paths are honoured, so `returnTo` cannot become an open redirect. */
+function safeReturnTo(value: string | null): string | null {
+  if (!value) return null;
+  if (!value.startsWith("/") || value.startsWith("//")) return null;
+  return value;
+}
+
+export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const form = useForm<z.infer<typeof formSchema>>({
-    // Initialize the form using react-hook-form with Zod resolver
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { email: "", password: "" },
   });
 
-  // Initialize the Next.js router for navigation after successful login
   const router = useRouter();
-
-  // Loading state for the form submission
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
-  // Handle form submission
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    // Form values destructor
-    const { email, password } = data;
+    setFormError(null);
 
-    // Sign in form api request
     try {
-      const response = await fetch("/api/login/", {
+      const response = await fetch("/api/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
       });
 
-      // Handle the success response from the API
-      if (response.ok) {
-        form.reset();
-        toast.add({ description: "Signin successful!", type: "success" });
-        setIsLoading(false);
-        return router.push("/");
+      const data = (await response.json().catch(() => null)) as LoginResponse | null;
+
+      if (!response.ok) {
+        setFormError(data?.error ?? "We could not sign you in. Please try again.");
+        return;
       }
 
-      // Handle the error response from the API
-      else {
-        setIsLoading(false);
-        return toast.add({
-          description: "Invalid Credentials. Please try again.",
-          type: "error",
-        });
-      }
+      form.reset();
+
+      // The role-appropriate destination is decided on the server from the
+      // backend's own role value.
+      const destination = safeReturnTo(searchParams.get("returnTo")) ?? data?.redirectTo ?? "/";
+      router.replace(destination);
+      router.refresh();
     } catch {
-      // Handle any unexpected errors during the fetch operation
-      setIsLoading(false);
-      toast.add({
-        description: "An error occurred during login",
-        type: "error",
-      });
+      setFormError("We could not reach EduVault. Check your connection and try again.");
     } finally {
       setIsLoading(false);
     }
@@ -98,66 +93,63 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
+          <CardTitle>Log in to EduVault</CardTitle>
+          <CardDescription>Enter your email and password to continue.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
             <FieldGroup>
               <Controller
                 name="email"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel>Email</FieldLabel>
+                    <FieldLabel htmlFor="login-email">Email</FieldLabel>
                     <Input
                       {...field}
+                      id="login-email"
+                      type="email"
                       aria-invalid={fieldState.invalid}
-                      placeholder="Enter your email"
-                      autoComplete="off"
-                      required
+                      placeholder="you@example.com"
+                      autoComplete="email"
                     />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
+
               <Controller
                 name="password"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel>Password</FieldLabel>
+                    <FieldLabel htmlFor="login-password">Password</FieldLabel>
                     <Input
-                      type="password"
                       {...field}
+                      id="login-password"
+                      type="password"
                       aria-invalid={fieldState.invalid}
                       placeholder="••••••••••"
-                      autoComplete="off"
-                      required
+                      autoComplete="current-password"
                     />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
 
+              {formError ? (
+                <p role="alert" className="text-sm text-red-600">
+                  {formError}
+                </p>
+              ) : null}
+
               <Field>
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={isLoading === true}
-                >
-                  {isLoading ? "Loading" : "Login"}
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? "Signing in…" : "Log in"}
                 </Button>
 
                 <FieldDescription className="text-center">
-                  Don&apos;t have an account?{" "}
-                  <Link href="/signup">Sign up</Link>
+                  Don&apos;t have an account? <Link href="/signup">Sign up</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

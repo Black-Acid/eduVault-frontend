@@ -1,205 +1,254 @@
-import {
-  MessagesSquare,
-  Sparkles,
-  TrendingUp,
-} from "@hugeicons/core-free-icons";
+import { Calendar01Icon, Sparkles, TrendingUp } from "@hugeicons/core-free-icons";
 import { IconSvgObject } from "@hugeicons/core-free-icons/types";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "~/components/ui/button";
 
-type fetures_types = {
+import { ErrorState } from "~/components/general/states";
+import { buttonVariants } from "~/components/ui/button";
+import { toUserMessage } from "~/lib/api/errors";
+import type { Subject } from "~/lib/api/schemas";
+import { getSubjects, yearsForSubject } from "~/lib/api/subjects";
+import { pluralize } from "~/lib/format";
+
+export const metadata = {
+  title: "EduVault — Practise WASSCE past questions",
+  description:
+    "Free WASSCE past-question practice with instant AI explanations for every answer you get wrong, plus tutoring sessions with real tutors.",
+};
+
+type FeatureType = {
   icon: IconSvgObject;
   headline: string;
   description: string;
 };
 
-const FEATURES: fetures_types[] = [
+/**
+ * Product claims on this page are limited to what the backend actually does:
+ * quizzes from real past papers, saved attempts, AI explanations for wrong
+ * answers, and tutor session booking. There is no messaging, no quiz resume
+ * and no untimed mode, so none are advertised.
+ */
+const FEATURES: FeatureType[] = [
   {
     icon: Sparkles,
     headline: "Free WASSCE quizzes",
     description:
-      "Practice real exam-style questions across all four core subjects, at no cost.",
+      "Practise real past-paper questions from EduVault's library of subjects and exam years, at no cost.",
   },
   {
     icon: TrendingUp,
     headline: "Track your marks",
     description:
-      "Every attempt is saved. See your scores improve and pick up right where you stopped.",
+      "Every quiz you submit is saved, then scored into your accuracy, streak and subject mastery.",
   },
   {
-    icon: MessagesSquare,
-    headline: "Message a tutor",
+    icon: Calendar01Icon,
+    headline: "Book a tutor",
     description:
-      "Stuck on a topic? Send a request to a subject tutor and get help directly in the app.",
+      "Send a session request to a subject tutor, and join the video call once they accept it.",
   },
 ];
 
-const how_it_works: { headline: string; description: string }[] = [
+const HOW_IT_WORKS: { headline: string; description: string }[] = [
   {
-    headline: "Pick a Paper",
-    description:
-      "Choose your subject and exam year from real WASSCE/BECE past questions.",
+    headline: "Pick a paper",
+    description: "Choose your subject, then the exam year and paper from real WASSCE past questions.",
   },
   {
     headline: "Attempt it",
-    description: "Answer under timed or untimed mode, just like the real exam.",
+    description: "Work through the paper one question at a time, with a timer on each question.",
   },
   {
     headline: "AI reviews you",
     description:
-      "Every wrong answer gets an instant, worked-through explanation.",
+      "Every question you answered incorrectly gets a worked-through explanation of what went wrong.",
   },
   {
-    headline: "Ask a tutor",
-    description:
-      "Still stuck? Chat a real tutor for that subject, right there.",
+    headline: "Book a tutor",
+    description: "Still stuck? Request a session with a tutor who teaches that subject.",
   },
 ];
 
-const subjects: { type: "Core" | "Elective"; name: string; total: number }[] = [
-  { type: "Core", name: "English", total: 1240 },
-  { type: "Core", name: "Integrated Science", total: 1860 },
-  { type: "Core", name: "Social Studies", total: 1540 },
-  { type: "Elective", name: "Elective Maths", total: 1360 },
-  { type: "Elective", name: "Physics", total: 1630 },
-  { type: "Elective", name: "Chemistry", total: 1280 },
-  { type: "Elective", name: "Biology", total: 1400 },
-];
+function SubjectCoverage({ subjects }: { subjects: Subject[] }) {
+  if (subjects.length === 0) {
+    return (
+      <div className="col-span-full">
+        <ErrorState
+          title="Subject coverage is unavailable"
+          message="We could not load EduVault's subject list right now. Please try again shortly."
+        />
+      </div>
+    );
+  }
 
-export default function Home() {
   return (
     <>
-      <section className="grid lg:grid-cols-11 gap-16 py-10">
-        <div className="lg:col-span-6 flex flex-col gap-y-8">
-          <p className="rounded-full uppercase text-xs font-medium w-fit border-dashed text-blue-600 bg-primary-foreground px-2 py-1 border border-blue-600">
+      {subjects.map((subject) => {
+        const years = yearsForSubject(subject);
+        const paperCount = subject.papers.length;
+
+        return (
+          <div
+            key={subject.id}
+            className="flex flex-col gap-y-3 rounded-lg border border-blue-600/40 bg-primary-foreground p-4"
+          >
+            <h3 className="font-mono text-xl font-semibold text-primary hyphens-auto sm:text-2xl">
+              {subject.name}
+            </h3>
+            <p className="text-primary/80">
+              {paperCount} {pluralize(paperCount, "paper")}
+            </p>
+            {years.length > 0 ? (
+              <p className="text-sm text-primary/60">
+                {years.length === 1 ? years[0] : `${years[years.length - 1]}–${years[0]}`}
+              </p>
+            ) : null}
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
+export default async function Home() {
+  let subjects: Subject[] = [];
+  let subjectsError: string | null = null;
+
+  try {
+    subjects = await getSubjects();
+  } catch (error) {
+    subjectsError = toUserMessage(error);
+  }
+
+  return (
+    <>
+      <section className="grid gap-16 py-10 lg:grid-cols-11">
+        <div className="flex flex-col gap-y-8 lg:col-span-6">
+          <p className="w-fit rounded-full border border-dashed border-blue-600 bg-primary-foreground px-2 py-1 text-xs font-medium uppercase text-blue-600">
             Built for Ghanaian Students
           </p>
           <div className="flex flex-col gap-y-4">
-            <h2 className="text-5xl font-mono leading-normal font-semibold max-w-3xl">
-              Practice WASSCE.{" "}
-              <span className="text-blue-600">Track every mark.</span>
-            </h2>
-            <p className="text-lg leading-relaxed text-primary/80 max-w-3xl">
-              Free core-subject quizzes, saved progress, direct tutor support,
-              and cutting-edge AI past question analysis provide a comprehensive
-              suite of practice tests, milestone tracking, and expert guidance
-              to help you overcome challenges, ensuring the ultimate confidence
-              to walk into the WASSCE fully prepared.
+            <h1 className="max-w-3xl font-mono text-5xl font-semibold leading-normal">
+              Practice WASSCE. <span className="text-blue-600">Track every mark.</span>
+            </h1>
+            <p className="max-w-3xl text-lg leading-relaxed text-primary/80">
+              Free past-question quizzes, saved results, and an AI review that explains every
+              question you got wrong — plus tutors you can book when you want to talk it through
+              with a person.
             </p>
           </div>
-          <div className="flex items-center gap-x-4">
-            <Button>
-              <Link href={"/login"}>Get Started as Student</Link>
-            </Button>
-            <Button variant={"outline"}>
-              <Link href={"/signup"}>I&apos;m a Tutor</Link>
-            </Button>
+          {/* Plain links styled as buttons: these navigate, so they must keep
+              link semantics rather than being announced as buttons. */}
+          <div className="flex flex-wrap items-center gap-4">
+            <Link href="/signup" className={buttonVariants()}>
+              Get started as a student
+            </Link>
+            <Link href="/signup" className={buttonVariants({ variant: "outline" })}>
+              I&apos;m a tutor
+            </Link>
           </div>
         </div>
-        <div className="lg:col-span-5 flex items-center">
+        <div className="flex items-center lg:col-span-5">
           <Image
             height={1000}
             width={1000}
-            src={"/hero.png"}
+            src="/hero.png"
             quality={100}
-            alt="Female SHS Student preparing herself for exams"
-            className="object-cover w-full lg:w-auto h-full max-h-150 lg:max-h-100 rounded-lg lg:grayscale-100 hover:grayscale-0 transition-all duration-200"
+            alt="A senior high school student preparing for her exams"
+            className="h-full max-h-150 w-full rounded-lg object-cover transition-all duration-200 hover:grayscale-0 lg:max-h-100 lg:w-auto lg:grayscale-100"
           />
         </div>
       </section>
-      <section className="grid lg:grid-cols-3 gap-4 lg:gap-8 py-20 bg-primary-foreground -mx-4 px-4">
-        <p className="border-dashed col-span-full uppercase rounded-full text-xs font-medium w-fit text-blue-600 bg-primary-foreground px-2 py-1 border border-blue-600">
+
+      <section className="-mx-4 grid gap-4 bg-primary-foreground px-4 py-20 lg:grid-cols-3 lg:gap-8">
+        <p className="col-span-full w-fit rounded-full border border-dashed border-blue-600 bg-primary-foreground px-2 py-1 text-xs font-medium uppercase text-blue-600">
           The features
         </p>
-        <h2 className="col-span-full text-4xl font-mono font-semibold max-w-xl">
+        <h2 className="col-span-full max-w-xl font-mono text-4xl font-semibold">
           Everything you <span className="text-blue-600">need</span> before{" "}
           <span className="text-blue-600">results day</span>
         </h2>
-        <p className="col-span-full text-lg max-w-2xl text-primary/80">
-          Master core subjects, track your learning milestones, and get expert
-          guidance with AI-driven tools designed to conquer difficult questions.
+        <p className="col-span-full max-w-2xl text-lg text-primary/80">
+          Practise real past papers, see where you stand in each subject, and get a clear
+          explanation whenever you get something wrong.
         </p>
         {FEATURES.map(({ description, headline, icon }) => (
           <div
-            key={description}
-            className="flex flex-col gap-y-4 lg:gap-y-8 rounded-lg border border-blue-600/70 bg-primary-foreground p-4 lg:p-8"
+            key={headline}
+            className="flex flex-col gap-y-4 rounded-lg border border-blue-600/70 bg-primary-foreground p-4 lg:gap-y-8 lg:p-8"
           >
-            <HugeiconsIcon
-              icon={icon}
-              strokeWidth={1}
-              color="#4f39f6"
-              size={56}
-            />
-            <h3 className="text-3xl md:text-2xl lg:text-3xl font-semibold font-mono text-primary/90">
+            <HugeiconsIcon icon={icon} strokeWidth={1} color="#4f39f6" size={56} />
+            <h3 className="font-mono text-3xl font-semibold text-primary/90 md:text-2xl lg:text-3xl">
               {headline}
             </h3>
             <p className="text-lg text-primary/70">{description}</p>
           </div>
         ))}
       </section>
-      <section className="py-20 bg-primary -mt-20 -mx-4 grid md:grid-cols-2 text-white/80 px-4 gap-8 md:gap-8">
-        <p className="col-span-full uppercase rounded-full text-xs font-medium w-fit text-blue-600 bg-primary border-dashed px-2 py-1 border border-blue-600">
+
+      <section className="-mx-4 -mt-20 grid gap-8 bg-primary px-4 py-20 text-white/80 md:grid-cols-2">
+        <p className="col-span-full w-fit rounded-full border border-dashed border-blue-600 bg-primary px-2 py-1 text-xs font-medium uppercase text-blue-600">
           The flow
         </p>
-        <h2 className="col-span-full text-4xl font-mono font-semibold">
+        <h2 className="col-span-full font-mono text-4xl font-semibold">
           From past question to understanding
         </h2>
-        <p className="col-span-full text-lg max-w-2xl">
-          Four steps, start to finish — no dead ends when you get something
-          wrong.
+        <p className="col-span-full max-w-2xl text-lg">
+          Four steps, start to finish — no dead ends when you get something wrong.
         </p>
-        {how_it_works.map(({ description, headline }, idx) => (
+        {HOW_IT_WORKS.map(({ description, headline }, index) => (
           <div key={headline} className="flex flex-col gap-y-4">
-            <div className="w-16 h-16 text-blue-600/60 rounded-full flex items-center justify-center border-2 text-xl border-blue-600/60">
-              <span>{idx + 1}</span>
+            <div
+              aria-hidden="true"
+              className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-blue-600/60 text-xl text-blue-600/60"
+            >
+              {index + 1}
             </div>
-            <h3 className="text-2xl font-mono font-semibold text-white">
-              {headline}
-            </h3>
-            <p className={"max-w-sm"}>{description}</p>
+            <h3 className="font-mono text-2xl font-semibold text-white">{headline}</h3>
+            <p className="max-w-sm">{description}</p>
           </div>
         ))}
       </section>
-      <section className="py-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        <p className="border-dashed col-span-full uppercase rounded-full text-xs font-medium w-fit text-blue-600 bg-primary-foreground px-2 py-1 border border-blue-600">
+
+      {/* Coverage comes straight from GET /subjects. No question totals: the
+          endpoint does not expose them. No Core/Elective split: the backend
+          does not classify subjects. */}
+      <section className="grid grid-cols-1 gap-6 py-10 sm:grid-cols-2 sm:gap-8 md:grid-cols-3 lg:grid-cols-4">
+        <p className="col-span-full w-fit rounded-full border border-dashed border-blue-600 bg-primary-foreground px-2 py-1 text-xs font-medium uppercase text-blue-600">
           Coverage
         </p>
-        <h2 className="col-span-full text-4xl font-mono font-semibold">
-          Every core and elective subject
+        <h2 className="col-span-full font-mono text-4xl font-semibold">
+          The subjects on EduVault today
         </h2>
-        <p className="col-span-full text-lg max-w-2xl text-primary/80">
-          Past questions pulled straight from WASSCE and BECE, organized by
-          year.
+        <p className="col-span-full max-w-2xl text-lg text-primary/80">
+          Past questions organised by subject, exam year and paper.
         </p>
-        {subjects.map(({ name, total, type }) => (
-          <div
-            key={name}
-            className="p-4 border border-blue-600/40 rounded-lg bg-primary-foreground flex flex-col gap-y-4"
-          >
-            <p className="text-blue-600 text-sm">{type}</p>
-            <h3 className="text-primary font-mono text-2xl font-semibold">
-              {name}
-            </h3>
-            <p className="text-primary/80">{total} questions</p>
+        {subjectsError ? (
+          <div className="col-span-full">
+            <ErrorState title="Subject coverage is unavailable" message={subjectsError} />
           </div>
-        ))}
+        ) : (
+          <SubjectCoverage subjects={subjects} />
+        )}
       </section>
-      <section className="bg-blue-600 text-white/80 -mx-4 px-4 py-20 flex flex-col items-center gap-y-8">
-        <p className="border-dashed col-span-full uppercase rounded-full text-xs font-medium w-fit text-white bg-white/10 px-2 py-1 border border-white">
-          Get Started
+
+      <section className="-mx-4 flex flex-col items-center gap-y-8 bg-blue-600 px-4 py-20 text-white/80">
+        <p className="w-fit rounded-full border border-dashed border-white bg-white/10 px-2 py-1 text-xs font-medium uppercase text-white">
+          Get started
         </p>
-        <h2 className="col-span-full text-4xl font-mono font-semibold text-white">
+        <h2 className="text-center font-mono text-4xl font-semibold text-white">
           Stop guessing why you got it wrong
         </h2>
-        <p className="col-span-full text-lg max-w-2xl">
-          Join 12,400+ SHS students turning past questions into real
-          understanding.
+        <p className="max-w-2xl text-center text-lg">
+          Turn past questions into real understanding, one explained answer at a time.
         </p>
-        <Button variant={"outline"} className={"hover:text-white"}>
-          <Link href={"/login"}>Get Started Now!</Link>
-        </Button>
+        <Link
+          href="/signup"
+          className={buttonVariants({ variant: "outline", className: "hover:text-white" })}
+        >
+          Create your free account
+        </Link>
       </section>
     </>
   );

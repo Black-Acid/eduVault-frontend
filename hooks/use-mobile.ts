@@ -1,19 +1,31 @@
-import * as React from "react"
+import * as React from "react";
 
-const MOBILE_BREAKPOINT = 768
+const MOBILE_BREAKPOINT = 768;
 
-export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+const QUERY = `(max-width: ${MOBILE_BREAKPOINT - 1}px)`;
 
-  React.useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
-    const onChange = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    }
-    mql.addEventListener("change", onChange)
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    return () => mql.removeEventListener("change", onChange)
-  }, [])
+function subscribe(onChange: () => void): () => void {
+  const mql = window.matchMedia(QUERY);
+  mql.addEventListener("change", onChange);
+  return () => mql.removeEventListener("change", onChange);
+}
 
-  return !!isMobile
+function getSnapshot(): boolean {
+  return window.matchMedia(QUERY).matches;
+}
+
+/** The server has no viewport, so it always renders the desktop layout. */
+function getServerSnapshot(): boolean {
+  return false;
+}
+
+/**
+ * Subscribes to the mobile breakpoint.
+ *
+ * `useSyncExternalStore` is used rather than an effect that calls setState, so
+ * the first client render already has the correct value and there is no
+ * cascading re-render.
+ */
+export function useIsMobile(): boolean {
+  return React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
